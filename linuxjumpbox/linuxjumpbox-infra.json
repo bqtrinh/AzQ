@@ -1,357 +1,360 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "vmUserName": {
-            "type": "string",
-            "metadata": {
-                "description": "Username for the Virtual Machine"
-            },
-            "defaultValue": "testuser"
-        },
-        "ExistingNetworkResourceGroup": {
-            "type": "string",
-            "metadata": {
-                "description": "Resource Group for the VNET where the VM will be placed"
-            }
-        },
-        "vnetName": {
-            "defaultValue": "vnet",
-            "type": "string"
-        },
-        "subnetName": {
-            "defaultValue": "mgtsubnet",
-            "type": "string"
-        },
-        "OperatingSystem": {
-            "type": "string",
-            "allowedValues": [
-                "SLES for SAP 12 SP5",
-                "SLES for SAP 15 SP1",
-                "SLES for SAP 12 SP3",
-                "SLES for SAP 12 SP4",
-                "SLES for SAP 12 SP2",
-                "RHEL 7.2 for SAP HANA",
-                "SLES 12 SP5",
-                "SLES 15 SP1",
-                "SLES 12 SP3",
-                "SLES 12 SP4",
-                "SLES 12 SP2"
-            ],
-            "defaultValue": "SLES 12 SP3",
-            "metadata": {
-                "description": "The type of the operating system you want to deploy."
-            }
-        },
-        "adminPublicKey": {
-            "type": "securestring",
-            "metadata": {
-                "description": "ssh key for the admin user"
-            }
-        },
-        "customUri": {
-            "type": "string",
-            "metadata": {
-                "description": "Uri for SAP Bits"
-            }
-        },
-        "StaticIP": {
-            "type": "string",
-            "defaultValue": "10.0.2.7",            
-            "metadata": {
-                "description": "static ip address for the virtual machine"
-            }
-        },
-        "_artifactsLocation": {
-            "type": "string",
-            "metadata": {
-                "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
-            },
-            "defaultValue": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/"
-        },
-        "_artifactsLocationSasToken": {
-            "type": "securestring",
-            "metadata": {
-                "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
-            },
-            "defaultValue": ""
-        },
-        "vmName": {
-            "type": "string",
-            "metadata": {
-                "description": "Name of the Virtual Machine"
-            },
-            "defaultValue": "linuxjumpbox"
-        },
-        "vmLocation": {
-            "type": "string",
-            "metadata": {
-                "description": "Location region for the Virtual Machine"
-            },
-            "defaultValue": ""
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmUserName": {
+      "type": "string",
+      "metadata": {
+        "description": "Username for the Virtual Machine"
+      },
+      "defaultValue": "testuser"
     },
-    "variables": {
-        "DataDiskSize": "1023",
-        "api-version": "2017-06-01",
-        "api-version-vm": "2017-03-30",        
-        "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
-        "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
-        "vmName": "[parameters('vmName')]",
-        "vNicName": "[concat(parameters('vmName'),'nic')]",
-        "vhdStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]",
-        "images": {
-            "Windows Server 2016 Datacenter": {
-                "sku": "2016-Datacenter",
-                "offer": "WindowsServer",
-                "publisher": "MicrosoftWindowsServer",
-                "version": "latest",
-                "OSType": "Windows"
-            },
-            "Windows Server 2019 Datacenter": {
-                "sku": "2019-Datacenter",
-                "offer": "WindowsServer",
-                "publisher": "MicrosoftWindowsServer",
-                "version": "latest",
-                "OSType": "Windows"
-            },  
-            "SLES 15 SP1": {
-                "sku": "gen1",
-                "offer": "sles-15-sp1",
-                "publisher": "SUSE",
-                "version": "latest",
-                "OSType": "Linux"
-            },                      
-            "SLES 12 SP3": {
-                "sku": "12-SP3",
-                "offer": "SLES-SAP",
-                "publisher": "SUSE",
-                "version": "latest",
-                "OSType": "Linux"
-            },
-            "SLES 12 SP3BYOS": {
-                "sku": "12-SP3",
-                "offer": "SLES-SAP-BYOS",
-                "publisher": "SUSE",
-                "OSType": "Linux",
-                "version": "latest"
-            },
-            "SLES 12 SP4": {
-                "sku": "12-SP4",
-                "offer": "SLES-SAP",
-                "publisher": "SUSE",
-                "version": "latest",
-                "OSType": "Linux"
-            },
-            "SLES for SAP 12 SP4": {
-                "sku": "12-SP4",
-                "offer": "SLES-SAP",
-                "publisher": "SUSE",
-                "version": "latest",
-                "OSType": "Linux"
-            },
-            "SLES for SAP 12 SP4 BYOS": {
-                "sku": "12-SP4",
-                "offer": "SLES-SAP-BYOS",
-                "publisher": "SUSE",
-                "version": "latest",
-                "OSType": "Linux"
-            },
-            "SLES for SAP 12 SP5": {
-                "sku": "12-SP5",
-                "offer": "SLES-SAP",
-                "publisher": "SUSE",
-                "version": "latest",
-                "OSType": "Linux"
-            },
-            "SLES for SAP 12 SP5 BYOS": {
-                "sku": "12-SP5",
-                "offer": "SLES-SAP-BYOS",
-                "publisher": "SUSE",
-                "version": "latest",
-                "OSType": "Linux"
-            },
-            "SLES for SAP 15 SP1": {
-                "sku": "15-SP1",
-                "offer": "SLES-SAP",
-                "publisher": "SUSE",
-                "version": "latest",
-                "OSType": "Linux"
-            },
-            "SLES for SAP 15 SP1 BYOS": {
-                "sku": "12-SP4",
-                "offer": "SLES-SAP-BYOS",
-                "publisher": "SUSE",
-                "version": "latest",
-                "OSType": "Linux"
-            },
+    "ExistingNetworkResourceGroup": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource Group for the VNET where the VM will be placed"
+      }
+    },
+    "vnetName": {
+      "defaultValue": "vnet",
+      "type": "string"
+    },
+    "subnetName": {
+      "defaultValue": "mgtsubnet",
+      "type": "string"
+    },
+    "OperatingSystem": {
+      "type": "string",
+      "allowedValues": [
+        "SLES for SAP 12 SP5",
+        "SLES for SAP 15 SP1",
+        "SLES for SAP 12 SP3",
+        "SLES for SAP 12 SP4",
+        "SLES for SAP 12 SP2",
+        "RHEL 7.2 for SAP HANA",
+        "SLES 12 SP5",
+        "SLES 15 SP1",
+        "SLES 12 SP3",
+        "SLES 12 SP4",
+        "SLES 12 SP2"
+      ],
+      "defaultValue": "SLES 12 SP3",
+      "metadata": {
+        "description": "The type of the operating system you want to deploy."
+      }
+    },
+    "adminPublicKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "ssh key for the admin user"
+      }
+    },
+    "customUri": {
+      "type": "string",
+      "metadata": {
+        "description": "Uri for SAP Bits"
+      }
+    },
+    "StaticIP": {
+      "type": "string",
+      "defaultValue": "10.0.2.7",
+      "metadata": {
+        "description": "static ip address for the virtual machine"
+      }
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
+      },
+      "defaultValue": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+      },
+      "defaultValue": ""
+    },
+    "vmName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Virtual Machine"
+      },
+      "defaultValue": "linuxjumpbox"
+    },
+    "vmLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Location region for the Virtual Machine"
+      },
+      "defaultValue": ""
+    }
+  },
+  "variables": {
+    "DataDiskSize": "1023",
+    "api-version": "2017-06-01",
+    "api-version-vm": "2017-03-30",
+    "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
+    "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
+    "vmName": "[parameters('vmName')]",
+    "vNicName": "[concat(parameters('vmName'),'nic')]",
+    "vhdStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]",
+    "images": {
+      "Windows Server 2016 Datacenter": {
+        "sku": "2016-Datacenter",
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "version": "latest",
+        "OSType": "Windows"
+      },
+      "Windows Server 2019 Datacenter": {
+        "sku": "2019-Datacenter",
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "version": "latest",
+        "OSType": "Windows"
+      },
+      "SLES 15 SP1": {
+        "sku": "gen1",
+        "offer": "sles-15-sp1",
+        "publisher": "SUSE",
+        "version": "latest",
+        "OSType": "Linux"
+      },
+      "SLES 12 SP3": {
+        "sku": "12-SP3",
+        "offer": "SLES-SAP",
+        "publisher": "SUSE",
+        "version": "latest",
+        "OSType": "Linux"
+      },
+      "SLES 12 SP3BYOS": {
+        "sku": "12-SP3",
+        "offer": "SLES-SAP-BYOS",
+        "publisher": "SUSE",
+        "OSType": "Linux",
+        "version": "latest"
+      },
+      "SLES 12 SP4": {
+        "sku": "12-SP4",
+        "offer": "SLES-SAP",
+        "publisher": "SUSE",
+        "version": "latest",
+        "OSType": "Linux"
+      },
+      "SLES for SAP 12 SP4": {
+        "sku": "12-SP4",
+        "offer": "SLES-SAP",
+        "publisher": "SUSE",
+        "version": "latest",
+        "OSType": "Linux"
+      },
+      "SLES for SAP 12 SP4 BYOS": {
+        "sku": "12-SP4",
+        "offer": "SLES-SAP-BYOS",
+        "publisher": "SUSE",
+        "version": "latest",
+        "OSType": "Linux"
+      },
+      "SLES for SAP 12 SP5": {
+        "sku": "12-SP5",
+        "offer": "SLES-SAP",
+        "publisher": "SUSE",
+        "version": "latest",
+        "OSType": "Linux"
+      },
+      "SLES for SAP 15 SP1 gen2": {
+        "sku": "gen2-15",
+        "offer": "SLES-SAP",
+        "publisher": "SUSE",
+        "version": "2019.11.15",
+        "OSType": "Linux"
+      },
+      "SLES for SAP 12 SP5 BYOS": {
+        "sku": "12-SP5",
+        "offer": "SLES-SAP-BYOS",
+        "publisher": "SUSE",
+        "version": "latest",
+        "OSType": "Linux"
+      },
+      "SLES for SAP 15 SP1": {
+        "sku": "15-SP1",
+        "offer": "SLES-SAP",
+        "publisher": "SUSE",
+        "version": "latest",
+        "OSType": "Linux"
+      },
+      "SLES for SAP 15 SP1 BYOS": {
+        "sku": "12-SP4",
+        "offer": "SLES-SAP-BYOS",
+        "publisher": "SUSE",
+        "version": "latest",
+        "OSType": "Linux"
+      },
 
-            "SLES 12 SP4BYOS": {
-                "sku": "12-SP4",
-                "offer": "SLES-SAP-BYOS",
-                "publisher": "SUSE",
-                "OSType": "Linux",
-                "version": "latest"
-            },            
-            "SLES 12 SP2": {
-                "sku": "12-SP2",
-                "offer": "SLES-SAP",
-                "publisher": "SUSE",
-                "version": "latest",
-                "OSType": "Linux"
-            },
-            "SLES 12 SP2 BYOS": {
-                "sku": "12-SP2",
-                "offer": "SLES-SAP-BYOS",
-                "publisher": "SUSE",
-                "OSType": "Linux",
-                "version": "latest"
-            }
-        },
-        "OperatingSystemSpec": {
-            "imagePublisher": "[variables('images')[parameters('OperatingSystem')].publisher]",
-            "imageOffer": "[variables('images')[parameters('OperatingSystem')].offer]",
-            "sku": "[variables('images')[parameters('OperatingSystem')].sku]",
-            "version": "latest"
-        },
-        "csExtension": {
-            "Windows": {
-                "script": "[concat(parameters('_artifactsLocation'), '/scripts/noop.ps1', parameters('_artifactsLocationSasToken'))]",
-                "scriptCall": "powershell.exe -ExecutionPolicy bypass -File noop.ps1"
-            },
-            "Linux": {
-                "script": "[concat(parameters('_artifactsLocation'), '/sap-ntp-server/noop.sh', parameters('_artifactsLocationSasToken'))]",
-                "scriptCall": "sh ntpserver.sh"
-            }
-        },
-        "scriptFolder": ".",
-        "PublicIpAddressName":"ipcftsapbitspip",
-        "networkSecurityGroupName":"ipcftsapbitsnsg",
-        "vmlocation": "[if(greater(length(parameters('vmLocation')),0), parameters('vmLocation'),resourceGroup().location)]"
+      "SLES 12 SP4BYOS": {
+        "sku": "12-SP4",
+        "offer": "SLES-SAP-BYOS",
+        "publisher": "SUSE",
+        "OSType": "Linux",
+        "version": "latest"
+      },
+      "SLES 12 SP2": {
+        "sku": "12-SP2",
+        "offer": "SLES-SAP",
+        "publisher": "SUSE",
+        "version": "latest",
+        "OSType": "Linux"
+      },
+      "SLES 12 SP2 BYOS": {
+        "sku": "12-SP2",
+        "offer": "SLES-SAP-BYOS",
+        "publisher": "SUSE",
+        "OSType": "Linux",
+        "version": "latest"
+      }
     },
-    "resources": [
-        {
-            "apiVersion": "2016-09-01",
-            "type": "Microsoft.Network/networkInterfaces",
-            "name": "[variables('vNicName')]",
-            "location": "[variables('vmlocation')]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/publicIpAddresses/', variables('PublicIpAddressName'))]"
-            ],
+    "OperatingSystemSpec": {
+      "imagePublisher": "[variables('images')[parameters('OperatingSystem')].publisher]",
+      "imageOffer": "[variables('images')[parameters('OperatingSystem')].offer]",
+      "sku": "[variables('images')[parameters('OperatingSystem')].sku]",
+      "version": "latest"
+    },
+    "csExtension": {
+      "Windows": {
+        "script": "[concat(parameters('_artifactsLocation'), '/scripts/noop.ps1', parameters('_artifactsLocationSasToken'))]",
+        "scriptCall": "powershell.exe -ExecutionPolicy bypass -File noop.ps1"
+      },
+      "Linux": {
+        "script": "[concat(parameters('_artifactsLocation'), '/sap-ntp-server/noop.sh', parameters('_artifactsLocationSasToken'))]",
+        "scriptCall": "sh ntpserver.sh"
+      }
+    },
+    "scriptFolder": ".",
+    "PublicIpAddressName": "ipcftsapbitspip",
+    "networkSecurityGroupName": "ipcftsapbitsnsg",
+    "vmlocation": "[if(greater(length(parameters('vmLocation')),0), parameters('vmLocation'),resourceGroup().location)]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2016-09-01",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[variables('vNicName')]",
+      "location": "[variables('vmlocation')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/publicIpAddresses/', variables('PublicIpAddressName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipcftsapbits",
             "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipcftsapbits",
-                        "properties": {
-                            "privateIPAllocationMethod": "Static",
-                            "privateIPAddress": "[parameters('StaticIP')]",
-                            "subnet": {
-                                "id": "[variables('subnetRef')]"
-                            },
-                            "publicIpAddress": {
-                                "id": "[resourceId(resourceGroup().name, 'Microsoft.Network/publicIpAddresses',variables('PublicIpAddressName'))]"
-                            }
-                        }
-                    }
-                ]
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "[parameters('StaticIP')]",
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              },
+              "publicIpAddress": {
+                "id": "[resourceId(resourceGroup().name, 'Microsoft.Network/publicIpAddresses',variables('PublicIpAddressName'))]"
+              }
             }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[variables('networkSecurityGroupName')]",
+      "apiVersion": "2018-08-01",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Network/publicIpAddresses",
+      "sku": {
+        "name": "basic"
+      },
+      "name": "[variables('PublicIpAddressName')]",
+      "apiVersion": "2018-08-01",
+      "location": "[variables('vmlocation')]",
+      "tags": {},
+      "properties": {
+        "publicIpAllocationMethod": "dynamic"
+      }
+    },
+    {
+      "type": "Microsoft.Compute/disks",
+      "name": "[concat(parameters('vmName'),'-data')]",
+      "apiVersion": "[variables('api-version-vm')]",
+      "location": "[variables('vmlocation')]",
+      "sku": {
+        "name": "Premium_LRS",
+        "tier": "Premium"
+      },
+      "properties": {
+        "creationData": {
+          "createOption": "Empty"
         },
-        {
-            "type": "Microsoft.Network/networkSecurityGroups",
-            "name": "[variables('networkSecurityGroupName')]",
-            "apiVersion": "2018-08-01",
-            "location": "[resourceGroup().location]",
-            "tags": {},
-            "properties": {
-            }
+        "diskSizeGB": "[variables('DataDiskSize')]"
+      }
+    },
+    {
+      "apiVersion": "2018-10-01",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[variables('vmName')]",
+      "location": "[variables('vmlocation')]",
+      "dependsOn": ["[variables('vNicName')]"],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_D2s_v3"
         },
-        {
-            "type": "Microsoft.Network/publicIpAddresses",
-            "sku": {
-                "name": "basic"
-            },
-            "name": "[variables('PublicIpAddressName')]",
-            "apiVersion": "2018-08-01",
-            "location": "[variables('vmlocation')]",
-            "tags": {},
-            "properties": {
-                "publicIpAllocationMethod": "dynamic"
-            }
-        },
-        {
-            "type": "Microsoft.Compute/disks",
-            "name": "[concat(parameters('vmName'),'-data')]",
-            "apiVersion": "[variables('api-version-vm')]",
-            "location": "[variables('vmlocation')]",
-            "sku": {
-                "name": "Premium_LRS",
-                "tier": "Premium"
-            },
-            "properties": {
-                "creationData": {
-                    "createOption": "Empty"
-                },
-                "diskSizeGB": "[variables('DataDiskSize')]"
-            }
-        },        
-        {
-            "apiVersion": "2018-10-01",
-            "type": "Microsoft.Compute/virtualMachines",
-            "name": "[variables('vmName')]",
-            "location": "[variables('vmlocation')]",
-            "dependsOn": [
-                "[variables('vNicName')]"
-            ],
-            "properties": {
-                "hardwareProfile": {
-                    "vmSize": "Standard_D2s_v3"
-                },
-                "osProfile": {
-                    "computerName": "[variables('vmName')]",
-                    "adminUsername": "[parameters('vmUserName')]",
-                    "linuxConfiguration": {
-                        "disablePasswordAuthentication": true,
-                        "ssh": {
-                            "publicKeys": [
-                                {
-                                    "path": "[concat('/home/', parameters('vmUserName'), '/.ssh/authorized_keys')]",
-                                    "keyData": "[parameters('adminPublicKey')]"
-                                }
-                            ]
-                        }
-                    }
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "[variables('OperatingSystemSpec').imagePublisher]",
-                        "offer": "[variables('OperatingSystemSpec').imageOffer]",
-                        "sku": "[variables('OperatingSystemSpec').sku]",
-                        "version": "[variables('OperatingSystemSpec').version]"
-                    },
-                    "osDisk": {
-                        "createOption": "FromImage"
-                    },
-                    "dataDisks": [
-                        {
-                            "lun": 0,
-                            "createOption": "Attach",
-                            "managedDisk": {
-                                "id": "[resourceId('Microsoft.Compute/disks/', concat(parameters('vmName'),'-data'))]"
-                            }
-                        }
-                    ]                    
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('vNicName'))]"
-                        }
-                    ]
+        "osProfile": {
+          "computerName": "[variables('vmName')]",
+          "adminUsername": "[parameters('vmUserName')]",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "[concat('/home/', parameters('vmUserName'), '/.ssh/authorized_keys')]",
+                  "keyData": "[parameters('adminPublicKey')]"
                 }
-            },
-            "resources": []
+              ]
+            }
+          }
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('OperatingSystemSpec').imagePublisher]",
+            "offer": "[variables('OperatingSystemSpec').imageOffer]",
+            "sku": "[variables('OperatingSystemSpec').sku]",
+            "version": "[variables('OperatingSystemSpec').version]"
+          },
+          "osDisk": {
+            "createOption": "FromImage"
+          },
+          "dataDisks": [
+            {
+              "lun": 0,
+              "createOption": "Attach",
+              "managedDisk": {
+                "id": "[resourceId('Microsoft.Compute/disks/', concat(parameters('vmName'),'-data'))]"
+              }
+            }
+          ]
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('vNicName'))]"
+            }
+          ]
         }
-    ],
-    "outputs": {}
+      },
+      "resources": []
+    }
+  ],
+  "outputs": {}
 }
-

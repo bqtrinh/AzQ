@@ -1,346 +1,347 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "vmName1": {
-            "type": "string",
-            "metadata": {
-                "description": "VM Name"
-            }
-        },
-        "vmName2": {
-            "type": "string",
-            "metadata": {
-                "description": "VM Name 2"
-            }
-        },
-        "HANAsubnetRef": {
-            "type": "string",
-            "metadata": {
-                "description": "The Hana subnet reference ID"
-            }
-        },
-        "OperatingSystem": {
-            "type": "string",
-            "metadata": {
-                "description": "Operating system for HANA Machine"
-            }
-        },
-        "vmUserName": {
-            "type": "string",
-            "metadata": {
-                "description": "Username for the Virtual Machine"
-            },
-            "defaultValue": "testuser"
-        },
-        "vmPassword": {
-            "type": "securestring",
-            "metadata": {
-                "description": "Password for the Virtual Machine"
-            },
-            "defaultValue": "Hana07061992!"
-        },
-        "hanaSid": {
-            "type": "string",
-            "metadata": {
-                "description": "SAP HANA System ID"
-            },
-            "defaultValue": "H10"
-        },
-        "hanaNumber": {
-            "type": "string",
-            "metadata": {
-                "description": "SAP HANA Instance Number"
-            },
-            "defaultValue": "00"
-        },
-        "vmSize": {
-            "type": "string",
-            "metadata": {
-                "description": "Size of VM to deploy"
-            }
-        },
-        "StaticIP1": {
-            "type": "string",
-            "metadata": {
-                "description": "IP Address for the HANA VM when Static IP Allocation Method has been selected"
-            },
-            "defaultValue": "10.0.5.4"
-        },
-        "StaticIP2": {
-            "type": "string",
-            "metadata": {
-                "description": "IP Address for the other HANA VM when Static IP Allocation Method has been selected"
-            },
-            "defaultValue": "10.0.5.5"
-        },
-        "HSRINST": {
-            "type": "string",
-            "metadata": {
-                "description": "Should we configure HSR for the VM"
-            },
-            "defaultValue": "no",
-            "allowedValues": [
-                "yes",
-                "no"
-            ]
-        },
-        "ISPRIMARY": {
-            "type": "string",
-            "metadata": {
-                "description": "Is this the primary HANA instance"
-            },
-            "defaultValue": "yes",
-            "allowedValues": [
-                "yes",
-                "no"
-            ]
-        },
-        "repoUri": {
-            "type": "string",
-            "metadata": {
-                "description": "URI to scripts repo"
-            },
-            "defaultValue": "no"
-        },
-        "ISCSIIP": {
-            "type": "string",
-            "metadata": {
-                "description": "IP Address for machine providing ISCSI storage"
-            },
-            "defaultValue": "10.0.6.4"
-        },
-        "loadBalancerName": {
-            "type": "string",
-            "metadata": {
-                "description": "load balancer name"
-            },
-            "defaultValue": "hanalb"
-        },
-        "LBIP": {
-            "type": "string",
-            "metadata": {
-                "description": "IP Address for the internal load balancer"
-            },
-            "defaultValue": "10.0.5.10"
-        },
-        "SubscriptionEmail": {
-            "type": "string",
-            "metadata": {
-                "description": "OS Subscription Email for BYOS, blank for PAYG"
-            },
-            "defaultValue": ""
-        },
-        "SubscriptionID": {
-            "type": "string",
-            "metadata": {
-                "description": "OS Subscription ID for BYOS, blank for PAYG"
-            },
-            "defaultValue": ""
-        },
-        "SMTUri": {
-            "type": "string",
-            "metadata": {
-                "description": "SMT URI, blank for none"
-            },
-            "defaultValue": ""
-        },
-        "avSetObj": {
-            "type": "object",
-            "metadata": {
-                "description": "Availability set."
-            }
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmName1": {
+      "type": "string",
+      "metadata": {
+        "description": "VM Name"
+      }
     },
-    "variables": {
-        "api-version": "2017-06-01",
-        "api-version-vm": "2018-04-01",
-        "mode": "Push",
-        "nicName": "[concat(parameters('vmName1'),'-static')]",
-        "subnetRef": "[parameters('HANASubnetRef')]",
-        "images": {
-            "Windows Server 2016 Datacenter": {
-                "sku": "2016-Datacenter",
-                "offer": "WindowsServer",
-                "publisher": "MicrosoftWindowsServer",
-                "version": "latest",
-                "OSType": "Windows"
-            },
-            "Windows Server 2019 Datacenter": {
-                "sku": "2019-Datacenter",
-                "offer": "WindowsServer",
-                "publisher": "MicrosoftWindowsServer",
-                "version": "latest",
-                "OSType": "Windows"
-            },            
-            "SLES 12 SP3": {
-                "sku": "12-SP3",
-                "offer": "SLES-SAP",
-                "publisher": "SUSE",
-                "version": "latest",
-                "OSType": "Linux"
-            },
-            "SLES 12 SP3BYOS": {
-                "sku": "12-SP3",
-                "offer": "SLES-SAP-BYOS",
-                "publisher": "SUSE",
-                "OSType": "Linux",
-                "version": "latest"
-            },
-            "SLES for SAP 12 SP3": {
-                "sku": "12-SP3",
-                "offer": "SLES-SAP",
-                "publisher": "SUSE",
-                "version": "latest",
-                "OSType": "Linux"
-            },
-            "SLES 12 SP4": {
-                "sku": "12-SP4",
-                "offer": "SLES-SAP",
-                "publisher": "SUSE",
-                "version": "latest",
-                "OSType": "Linux"
-            },
-            "SLES for SAP 12 SP4": {
-                "sku": "12-SP4",
-                "offer": "SLES-SAP",
-                "publisher": "SUSE",
-                "version": "latest",
-                "OSType": "Linux"
-            },
-            "SLES for SAP 12 SP4 BYOS": {
-                "sku": "12-SP4",
-                "offer": "SLES-SAP-BYOS",
-                "publisher": "SUSE",
-                "version": "latest",
-                "OSType": "Linux"
-            },
-            "SLES for SAP 12 SP5": {
-                "sku": "gen1",
-                "offer": "sles-sap-12-sp5",
-                "publisher": "SUSE",
-                "version": "latest",
-                "OSType": "Linux"
-            },
-            "SLES for SAP 12 SP5 BYOS": {
-                "sku": "gen1",
-                "offer": "sles-sap-12-sp5-byos",
-                "publisher": "SUSE",
-                "version": "latest",
-                "OSType": "Linux"
-            },
-            "SLES for SAP 15 SP1": {
-                "sku": "gen1",
-                "offer": "sles-sap-15-sp1",
-                "publisher": "SUSE",
-                "version": "latest",
-                "OSType": "Linux"
-            },
-            "SLES for SAP 15 SP1 BYOS": {
-                "sku": "gen1",
-                "offer": "sles-sap-15-sp1-byos",
-                "publisher": "SUSE",
-                "version": "latest",
-                "OSType": "Linux"
-            },
+    "vmName2": {
+      "type": "string",
+      "metadata": {
+        "description": "VM Name 2"
+      }
+    },
+    "HANAsubnetRef": {
+      "type": "string",
+      "metadata": {
+        "description": "The Hana subnet reference ID"
+      }
+    },
+    "OperatingSystem": {
+      "type": "string",
+      "metadata": {
+        "description": "Operating system for HANA Machine"
+      }
+    },
+    "vmUserName": {
+      "type": "string",
+      "metadata": {
+        "description": "Username for the Virtual Machine"
+      },
+      "defaultValue": "testuser"
+    },
+    "vmPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Password for the Virtual Machine"
+      },
+      "defaultValue": "Hana07061992!"
+    },
+    "hanaSid": {
+      "type": "string",
+      "metadata": {
+        "description": "SAP HANA System ID"
+      },
+      "defaultValue": "H10"
+    },
+    "hanaNumber": {
+      "type": "string",
+      "metadata": {
+        "description": "SAP HANA Instance Number"
+      },
+      "defaultValue": "00"
+    },
+    "vmSize": {
+      "type": "string",
+      "metadata": {
+        "description": "Size of VM to deploy"
+      }
+    },
+    "StaticIP1": {
+      "type": "string",
+      "metadata": {
+        "description": "IP Address for the HANA VM when Static IP Allocation Method has been selected"
+      },
+      "defaultValue": "10.0.5.4"
+    },
+    "StaticIP2": {
+      "type": "string",
+      "metadata": {
+        "description": "IP Address for the other HANA VM when Static IP Allocation Method has been selected"
+      },
+      "defaultValue": "10.0.5.5"
+    },
+    "HSRINST": {
+      "type": "string",
+      "metadata": {
+        "description": "Should we configure HSR for the VM"
+      },
+      "defaultValue": "no",
+      "allowedValues": ["yes", "no"]
+    },
+    "ISPRIMARY": {
+      "type": "string",
+      "metadata": {
+        "description": "Is this the primary HANA instance"
+      },
+      "defaultValue": "yes",
+      "allowedValues": ["yes", "no"]
+    },
+    "repoUri": {
+      "type": "string",
+      "metadata": {
+        "description": "URI to scripts repo"
+      },
+      "defaultValue": "no"
+    },
+    "ISCSIIP": {
+      "type": "string",
+      "metadata": {
+        "description": "IP Address for machine providing ISCSI storage"
+      },
+      "defaultValue": "10.0.6.4"
+    },
+    "loadBalancerName": {
+      "type": "string",
+      "metadata": {
+        "description": "load balancer name"
+      },
+      "defaultValue": "hanalb"
+    },
+    "LBIP": {
+      "type": "string",
+      "metadata": {
+        "description": "IP Address for the internal load balancer"
+      },
+      "defaultValue": "10.0.5.10"
+    },
+    "SubscriptionEmail": {
+      "type": "string",
+      "metadata": {
+        "description": "OS Subscription Email for BYOS, blank for PAYG"
+      },
+      "defaultValue": ""
+    },
+    "SubscriptionID": {
+      "type": "string",
+      "metadata": {
+        "description": "OS Subscription ID for BYOS, blank for PAYG"
+      },
+      "defaultValue": ""
+    },
+    "SMTUri": {
+      "type": "string",
+      "metadata": {
+        "description": "SMT URI, blank for none"
+      },
+      "defaultValue": ""
+    },
+    "avSetObj": {
+      "type": "object",
+      "metadata": {
+        "description": "Availability set."
+      }
+    }
+  },
+  "variables": {
+    "api-version": "2017-06-01",
+    "api-version-vm": "2018-04-01",
+    "mode": "Push",
+    "nicName": "[concat(parameters('vmName1'),'-static')]",
+    "subnetRef": "[parameters('HANASubnetRef')]",
+    "images": {
+      "Windows Server 2016 Datacenter": {
+        "sku": "2016-Datacenter",
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "version": "latest",
+        "OSType": "Windows"
+      },
+      "Windows Server 2019 Datacenter": {
+        "sku": "2019-Datacenter",
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "version": "latest",
+        "OSType": "Windows"
+      },
+      "SLES 12 SP3": {
+        "sku": "12-SP3",
+        "offer": "SLES-SAP",
+        "publisher": "SUSE",
+        "version": "latest",
+        "OSType": "Linux"
+      },
+      "SLES 12 SP3BYOS": {
+        "sku": "12-SP3",
+        "offer": "SLES-SAP-BYOS",
+        "publisher": "SUSE",
+        "OSType": "Linux",
+        "version": "latest"
+      },
+      "SLES for SAP 12 SP3": {
+        "sku": "12-SP3",
+        "offer": "SLES-SAP",
+        "publisher": "SUSE",
+        "version": "latest",
+        "OSType": "Linux"
+      },
+      "SLES 12 SP4": {
+        "sku": "12-SP4",
+        "offer": "SLES-SAP",
+        "publisher": "SUSE",
+        "version": "latest",
+        "OSType": "Linux"
+      },
+      "SLES for SAP 12 SP4": {
+        "sku": "12-SP4",
+        "offer": "SLES-SAP",
+        "publisher": "SUSE",
+        "version": "latest",
+        "OSType": "Linux"
+      },
+      "SLES for SAP 12 SP4 BYOS": {
+        "sku": "12-SP4",
+        "offer": "SLES-SAP-BYOS",
+        "publisher": "SUSE",
+        "version": "latest",
+        "OSType": "Linux"
+      },
+      "SLES for SAP 12 SP5": {
+        "sku": "gen1",
+        "offer": "sles-sap-12-sp5",
+        "publisher": "SUSE",
+        "version": "latest",
+        "OSType": "Linux"
+      },
+      "SLES for SAP 12 SP5 BYOS": {
+        "sku": "gen1",
+        "offer": "sles-sap-12-sp5-byos",
+        "publisher": "SUSE",
+        "version": "latest",
+        "OSType": "Linux"
+      },
+      "SLES for SAP 15 SP1": {
+        "sku": "gen1",
+        "offer": "sles-sap-15-sp1",
+        "publisher": "SUSE",
+        "version": "latest",
+        "OSType": "Linux"
+      },
+      "SLES for SAP 15 SP1 gen2": {
+        "sku": "gen2-15",
+        "offer": "SLES-SAP",
+        "publisher": "SUSE",
+        "version": "2019.11.15",
+        "OSType": "Linux"
+      },
+      "SLES for SAP 15 SP1 BYOS": {
+        "sku": "gen1",
+        "offer": "sles-sap-15-sp1-byos",
+        "publisher": "SUSE",
+        "version": "latest",
+        "OSType": "Linux"
+      },
 
-            "SLES 12 SP4BYOS": {
-                "sku": "12-SP4",
-                "offer": "SLES-SAP-BYOS",
-                "publisher": "SUSE",
-                "OSType": "Linux",
-                "version": "latest"
-            },            
-            "SLES 12 SP2": {
-                "sku": "12-SP2",
-                "offer": "SLES-SAP",
-                "publisher": "SUSE",
-                "version": "latest",
-                "OSType": "Linux"
-            },
-            "SLES 12 SP2 BYOS": {
-                "sku": "12-SP2",
-                "offer": "SLES-SAP-BYOS",
-                "publisher": "SUSE",
-                "OSType": "Linux",
-                "version": "latest"
-            }
-        },
-        "OperatingSystemSpec": {
-            "imagePublisher": "[variables('images')[parameters('OperatingSystem')].publisher]",
-            "imageOffer": "[variables('images')[parameters('OperatingSystem')].offer]",
-            "sku": "[variables('images')[parameters('OperatingSystem')].sku]",
-            "version": "latest"
-        },
-        "internalAVSetObj": "[parameters('avSetObj')]"
+      "SLES 12 SP4BYOS": {
+        "sku": "12-SP4",
+        "offer": "SLES-SAP-BYOS",
+        "publisher": "SUSE",
+        "OSType": "Linux",
+        "version": "latest"
+      },
+      "SLES 12 SP2": {
+        "sku": "12-SP2",
+        "offer": "SLES-SAP",
+        "publisher": "SUSE",
+        "version": "latest",
+        "OSType": "Linux"
+      },
+      "SLES 12 SP2 BYOS": {
+        "sku": "12-SP2",
+        "offer": "SLES-SAP-BYOS",
+        "publisher": "SUSE",
+        "OSType": "Linux",
+        "version": "latest"
+      }
     },
-    "resources": [
-        {
-            "apiVersion": "[variables('api-version')]",
-            "type": "Microsoft.Network/networkInterfaces",
-            "name": "[concat(parameters('vmName1'),'-static')]",
-            "location": "[resourceGroup().location]",
+    "OperatingSystemSpec": {
+      "imagePublisher": "[variables('images')[parameters('OperatingSystem')].publisher]",
+      "imageOffer": "[variables('images')[parameters('OperatingSystem')].offer]",
+      "sku": "[variables('images')[parameters('OperatingSystem')].sku]",
+      "version": "latest"
+    },
+    "internalAVSetObj": "[parameters('avSetObj')]"
+  },
+  "resources": [
+    {
+      "apiVersion": "[variables('api-version')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[concat(parameters('vmName1'),'-static')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "enableAcceleratedNetworking": true,
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
             "properties": {
-                "enableAcceleratedNetworking": true,
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "privateIPAllocationMethod": "Static",
-                            "privateIPAddress": "[parameters('StaticIP1')]",
-                            "subnet": {
-                                "id": "[variables('subnetRef')]"
-                            },
-                            "loadBalancerBackendAddressPools": [
-                                {
-                                    "id": "[concat(resourceId('Microsoft.Network/loadBalancers', parameters('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
-                                }
-                            ]
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "apiVersion": "[variables('api-version-vm')]",
-            "type": "Microsoft.Compute/virtualMachines",
-            "name": "[parameters('vmName1')]",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
-            ],
-            "properties": {
-                "availabilitySet": "[variables('internalAVSetObj')]",
-                "hardwareProfile": {
-                    "vmSize": "[parameters('vmSize')]"
-                },
-                "osProfile": {
-                    "computerName": "[parameters('vmName1')]",
-                    "adminUsername": "[parameters('vmUserName')]",
-                    "adminPassword": "[parameters('vmPassword')]"
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "[variables('OperatingSystemSpec').imagePublisher]",
-                        "offer": "[variables('OperatingSystemSpec').imageOffer]",
-                        "sku": "[variables('OperatingSystemSpec').sku]",
-                        "version": "latest"
-                    },
-                    "osDisk": {
-                        "createOption": "FromImage"
-                    },
-                    "dataDisks": [ ]
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
-                        }
-                    ]
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "[parameters('StaticIP1')]",
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              },
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "[concat(resourceId('Microsoft.Network/loadBalancers', parameters('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
                 }
-            },
-            "resources": []
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "[variables('api-version-vm')]",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[parameters('vmName1')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+      ],
+      "properties": {
+        "availabilitySet": "[variables('internalAVSetObj')]",
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[parameters('vmName1')]",
+          "adminUsername": "[parameters('vmUserName')]",
+          "adminPassword": "[parameters('vmPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('OperatingSystemSpec').imagePublisher]",
+            "offer": "[variables('OperatingSystemSpec').imageOffer]",
+            "sku": "[variables('OperatingSystemSpec').sku]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "FromImage"
+          },
+          "dataDisks": []
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+            }
+          ]
         }
-    ],
-    "outputs": {}
+      },
+      "resources": []
+    }
+  ],
+  "outputs": {}
 }
