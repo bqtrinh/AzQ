@@ -12,7 +12,7 @@
     "ExistingNetworkResourceGroup": {
       "type": "string",
       "metadata": {
-        "description": "Resource Group for the VNET where the VM will be placed"
+        "description": "Resource Group for the VNET where the VM will be placed "
       }
     },
     "vnetName": {

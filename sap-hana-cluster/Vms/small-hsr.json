@@ -63,14 +63,14 @@
     "StaticIP1": {
       "type": "string",
       "metadata": {
-        "description": "IP Address for the HANA VM when Static IP Allocation Method has been selected"
+        "description": "IP Addr for the HANA VM when Static IP Allocation Method has been selected"
       },
       "defaultValue": "10.0.5.4"
     },
     "StaticIP2": {
       "type": "string",
       "metadata": {
-        "description": "IP Address for the other HANA VM when Static IP Allocation Method has been selected"
+        "description": "IP Addr for the other HANA VM when Static IP Allocation Method has been selected"
       },
       "defaultValue": "10.0.5.5"
     },
