@@ -13,14 +13,14 @@ echo "creating iscsi server"
 az group deployment create \
 --name ISCSIDeployment \
 --resource-group $rgname \
---template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-iscsi-server/iscsiserver-infra.json" \
+--template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/mastersap-iscsi-server/iscsiserver-infra.json" \
 --parameters vmName="${ISCSIVMNAME}" \
-            vmUserName=$vmusername \
-             ExistingNetworkResourceGroup=$vnetrgname \
-             vnetName=$vnetname \
-             subnetName=$mgtsubnetname \
-             OperatingSystem="SLES 15 SP1" \
-             vmPassword=$vmpassword \
-                   StaticIP=$ISCSIIP
+vmUserName=$vmusername \
+ExistingNetworkResourceGroup=$vnetrgname \
+vnetName=$vnetname \
+subnetName=$mgtsubnetname \
+OperatingSystem="SLES 15 SP1" \
+vmPassword=$vmpassword \
+StaticIP=$ISCSIIP
 
 echo "iscsi server created"

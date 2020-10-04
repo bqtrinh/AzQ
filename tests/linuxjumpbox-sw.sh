@@ -13,7 +13,7 @@ echo "installing linuxjumpbox software"
 az group deployment create \
 --name LINUXJUMPBOXDeployment \
 --resource-group "$rgname" \
---template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/linuxjumpbox/linuxjumpbox-sw.json" \
+--template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/masterlinuxjumpbox/linuxjumpbox-sw.json" \
 --parameters \
 vmName="$LINUXJUMPBOXNAME" \
 vmUserName=$vmusername \
@@ -28,4 +28,3 @@ sapid="$SAPID" \
 sappasswd="$SAPPASSWD" \
 downloadbitsfrom="SAP" \
 SAPSOFTWARETODOWNLOAD="NONE"
-

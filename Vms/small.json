@@ -1,152 +1,149 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "vmName": {
-            "type": "string",
-            "metadata": {
-                "description": "VM Name"
-            }
-        },
-        "customUri": {
-            "type": "string",
-            "metadata": {
-                "description": "Uri for SAP Bits"
-            }
-        },
-        "HANAsubnetRef": {
-            "type": "string",
-            "metadata": {
-                "description": "The Hana subnet reference ID"
-            }
-        },
-        "OperatingSystem": {
-            "type": "string",
-            "metadata": {
-                "description": "Operating system for HANA Machine"
-            },
-            "defaultValue": "SLES for SAP 12 SP3",
-            "allowedValues": [
-                "SLES for SAP 12 SP3",
-                "SLES for SAP 12 SP2",		
-                "RHEL 7.2 for SAP HANA"
-            ]
-        },
-        "vmUserName": {
-            "type": "string",
-            "metadata": {
-                "description": "Username for the Virtual Machine"
-            },
-            "defaultValue": "testuser"
-        },
-        "vmPassword": {
-            "type": "securestring",
-            "metadata": {
-                "description": "Password for the Virtual Machine"
-            },
-            "defaultValue": "Hana07061992!"
-        },
-        "hanaSid": {
-            "type": "string",
-            "metadata": {
-                "description": "SAP HANA System ID"
-            },
-            "defaultValue": "H10"
-        },
-        "hanaNumber": {
-            "type": "string",
-            "metadata": {
-                "description": "SAP HANA Instance Number"
-            },
-            "defaultValue": "00"
-        },      
-        "vmSize": {
-            "type": "string",
-            "metadata": {
-                "description": "Size of VM to deploy"
-            }
-        },
-        "IPAllocationMethod": {
-            "type": "string",
-            "allowedValues" : [
-              "Dynamic",
-              "Static"
-            ],
-            "metadata": {
-                "description": "IP Allocation Method"
-          }
-        },
-        "StaticIP": {
-          "type": "string",
-          "metadata": {
-            "description": "IP Address for the HANA VM when Static IP Allocation Method has been selected"
-          },
-          "defaultValue": "10.0.5.4"
-        },               
-        "SubscriptionEmail": {
-          "type": "string",
-          "metadata": {
-            "description": "OS Subscription Email for BYOS, blank for PAYG"
-          },
-          "defaultValue": ""
-        },              
-        "SubscriptionID": {
-          "type": "string",
-          "metadata": {
-            "description": "OS Subscription ID for BYOS, blank for PAYG"
-          },
-          "defaultValue": ""
-        },
-        "SMTUri":{
-          "type": "string",
-          "metadata":{
-            "description": "SMT Uri, blank for none"
-          },
-          "DefaultValue": ""
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmName": {
+      "type": "string",
+      "metadata": {
+        "description": "VM Name"
+      }
     },
-    "variables": {
-        "api-version": "2017-06-01",
-        "api-version-vm": "2017-12-01",
-        "mode": "Push",
-        "baseUri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/",
-        "nicName": "[if (equals(parameters('IPAllocationMethod'),'Static'), concat(parameters('vmName'),'-static'), concat(parameters('vmName'),'-dynamic'))]",
-        "subnetRef": "[parameters('HANASubnetRef')]",
-        "OperatingSystemSpec":{
-            "imagePublisher":"[if (contains(parameters('OperatingSystem'),'SLES'),'SUSE','RedHat')]",
-            "imageOffer":"[if (contains(parameters('OperatingSystem'),'SLES'),if (contains(parameters('SubscriptionEmail'),'@'),'SLES-SAP-BYOS','SLES-SAP'),'RHEL-SAP-HANA')]",
-            "sku":"[if (contains(parameters('OperatingSystem'),'12 SP3'),'12-SP3',if (contains(parameters('OperatingSystem'),'12 SP2'),'12-SP2','7.2'))]"
-        },
-        "diskConfig": "[variables(concat('diskConfig_', parameters('vmSize')))]",
-        "diskConfig_Standard_E16s_v3": {
-            "shared": 511,
-            "sap": 63,
-            "backup": 255,
-            "data1": 511,
-            "data2": 511
-        },
-        "diskConfig_Standard_E32s_v3": {
-            "shared": 511,
-            "sap": 63,
-            "backup": 511,
-            "data1": 511,
-            "data2": 511
-        },
-        "diskConfig_Standard_E64s_v3": {
-            "shared": 511,
-            "sap": 63,
-            "backup": 1023,
-            "data1": 511,
-            "data2": 511
-        },
-        "diskConfig_Standard_GS5": {
-            "shared": 511,
-            "sap": 63,
-            "backup": 1023,
-            "data1": 511,
-            "data2": 511
-        }
+    "customUri": {
+      "type": "string",
+      "metadata": {
+        "description": "Uri for SAP Bits"
+      }
+    },
+    "HANAsubnetRef": {
+      "type": "string",
+      "metadata": {
+        "description": "The Hana subnet reference ID"
+      }
+    },
+    "OperatingSystem": {
+      "type": "string",
+      "metadata": {
+        "description": "Operating system for HANA Machine"
       },
+      "defaultValue": "SLES for SAP 12 SP3",
+      "allowedValues": [
+        "SLES for SAP 12 SP3",
+        "SLES for SAP 12 SP2",
+        "RHEL 7.2 for SAP HANA"
+      ]
+    },
+    "vmUserName": {
+      "type": "string",
+      "metadata": {
+        "description": "Username for the Virtual Machine"
+      },
+      "defaultValue": "testuser"
+    },
+    "vmPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Password for the Virtual Machine"
+      },
+      "defaultValue": "Hana07061992!"
+    },
+    "hanaSid": {
+      "type": "string",
+      "metadata": {
+        "description": "SAP HANA System ID"
+      },
+      "defaultValue": "H10"
+    },
+    "hanaNumber": {
+      "type": "string",
+      "metadata": {
+        "description": "SAP HANA Instance Number"
+      },
+      "defaultValue": "00"
+    },
+    "vmSize": {
+      "type": "string",
+      "metadata": {
+        "description": "Size of VM to deploy"
+      }
+    },
+    "IPAllocationMethod": {
+      "type": "string",
+      "allowedValues": ["Dynamic", "Static"],
+      "metadata": {
+        "description": "IP Allocation Method"
+      }
+    },
+    "StaticIP": {
+      "type": "string",
+      "metadata": {
+        "description": "IP Address for the HANA VM when Static IP Allocation Method has been selected"
+      },
+      "defaultValue": "10.0.5.4"
+    },
+    "SubscriptionEmail": {
+      "type": "string",
+      "metadata": {
+        "description": "OS Subscription Email for BYOS, blank for PAYG"
+      },
+      "defaultValue": ""
+    },
+    "SubscriptionID": {
+      "type": "string",
+      "metadata": {
+        "description": "OS Subscription ID for BYOS, blank for PAYG"
+      },
+      "defaultValue": ""
+    },
+    "SMTUri": {
+      "type": "string",
+      "metadata": {
+        "description": "SMT Uri, blank for none"
+      },
+      "DefaultValue": ""
+    }
+  },
+  "variables": {
+    "api-version": "2017-06-01",
+    "api-version-vm": "2017-12-01",
+    "mode": "Push",
+    "baseUri": "https://raw.githubusercontent.com/bqtrinh/AzQ/master",
+    "nicName": "[if (equals(parameters('IPAllocationMethod'),'Static'), concat(parameters('vmName'),'-static'), concat(parameters('vmName'),'-dynamic'))]",
+    "subnetRef": "[parameters('HANASubnetRef')]",
+    "OperatingSystemSpec": {
+      "imagePublisher": "[if (contains(parameters('OperatingSystem'),'SLES'),'SUSE','RedHat')]",
+      "imageOffer": "[if (contains(parameters('OperatingSystem'),'SLES'),if (contains(parameters('SubscriptionEmail'),'@'),'SLES-SAP-BYOS','SLES-SAP'),'RHEL-SAP-HANA')]",
+      "sku": "[if (contains(parameters('OperatingSystem'),'12 SP3'),'12-SP3',if (contains(parameters('OperatingSystem'),'12 SP2'),'12-SP2','7.2'))]"
+    },
+    "diskConfig": "[variables(concat('diskConfig_', parameters('vmSize')))]",
+    "diskConfig_Standard_E16s_v3": {
+      "shared": 511,
+      "sap": 63,
+      "backup": 255,
+      "data1": 511,
+      "data2": 511
+    },
+    "diskConfig_Standard_E32s_v3": {
+      "shared": 511,
+      "sap": 63,
+      "backup": 511,
+      "data1": 511,
+      "data2": 511
+    },
+    "diskConfig_Standard_E64s_v3": {
+      "shared": 511,
+      "sap": 63,
+      "backup": 1023,
+      "data1": 511,
+      "data2": 511
+    },
+    "diskConfig_Standard_GS5": {
+      "shared": 511,
+      "sap": 63,
+      "backup": 1023,
+      "data1": 511,
+      "data2": 511
+    }
+  },
   "resources": [
     {
       "condition": "[equals(parameters('IPAllocationMethod'), 'Dynamic')]",
@@ -350,31 +347,28 @@
         }
       },
 
-        "resources": [
-          {
-            "name": "scriptextension",
-            "type": "extensions",
-            "location": "[resourceGroup().location]",
-            "apiVersion": "[variables('api-version-vm')]",
-            "dependsOn": [
-              "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
-            ],
-            "properties": {
-              "publisher": "Microsoft.Azure.Extensions",
-              "type": "CustomScript",
-              "typeHandlerVersion": "2.0",
-              "autoUpgradeMinorVersion": true,
-              "settings": {
-                "fileUris": [
-                  "[concat(variables('baseUri'),'scripts/small.sh')]"
-                ],
-                "commandToExecute": "[concat('bash small.sh \"', parameters('customUri'), '\"  \"' , parameters('vmUserName'), '\" \"', parameters('vmPassword'),'\" \"', parameters('HANASID'), '\" \"', parameters('HANANUMBER'), '\" \"', parameters('vmSize'), '\" \"',parameters('SubscriptionEmail'), '\" \"', parameters('SubscriptionID'),'\"  \"', parameters('SMTUri'),'\"')]"
-              }
+      "resources": [
+        {
+          "name": "scriptextension",
+          "type": "extensions",
+          "location": "[resourceGroup().location]",
+          "apiVersion": "[variables('api-version-vm')]",
+          "dependsOn": [
+            "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Azure.Extensions",
+            "type": "CustomScript",
+            "typeHandlerVersion": "2.0",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+              "fileUris": ["[concat(variables('baseUri'),'scripts/small.sh')]"],
+              "commandToExecute": "[concat('bash small.sh \"', parameters('customUri'), '\"  \"' , parameters('vmUserName'), '\" \"', parameters('vmPassword'),'\" \"', parameters('HANASID'), '\" \"', parameters('HANANUMBER'), '\" \"', parameters('vmSize'), '\" \"',parameters('SubscriptionEmail'), '\" \"', parameters('SubscriptionID'),'\"  \"', parameters('SMTUri'),'\"')]"
             }
           }
-        ]
-      }
-       
-    ],
-    "outputs": {}
+        }
+      ]
+    }
+  ],
+  "outputs": {}
 }

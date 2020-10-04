@@ -1,699 +1,698 @@
 {
-    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "prefix": {
-            "type": "string",
-            "metadata": {
-                "description": "prefix for resource naming"
-            }
-        },
-        "VMName1": {
-            "type": "string",
-            "metadata": {
-                "description": "First VM Name"
-            }
-        },
-        "VMName2": {
-            "type": "string",
-            "metadata": {
-                "description": "Second VM Name"
-            }
-        },
-        "VMSize": {
-            "type": "string",
-            "metadata": {
-                "description": "VM Size"
-            },
-            "defaultValue": "Standard_DS3_v2",
-            "allowedValues": [
-                "Standard_DS3_v2", 
-                "Standard_DS12_v2", 
-                "Standard_DS13-4_v2", 
-                "Standard_DS14-4_v2", 
-                "Standard_F4s", 
-                "Standard_D2s_v3", 
-                "Standard_D4s_v3",                 
-                "Standard_D8s_v3", 
-                "Standard_D32-8s_v3", 
-                "Standard_E8s_v3", 
-                "Standard_F8s_v2", 
-                "Standard_DS4_v2", 
-                "Standard_DS13_v2", 
-                "Standard_DS14-8_v2", 
-                "Standard_F8s", 
-                "Standard_D16s_v3", 
-                "Standard_D32-16s_v3", 
-                "Standard_D64-16s_v3", 
-                "Standard_E16s_v3", 
-                "Standard_E32-16s_v3", 
-                "Standard_F16s_v2", 
-                "Standard_D5_v2", 
-                "Standard_DS5_v2",
-                "Standard_DS14_v2", 
-                "Standard_F16s", 
-                "Standard_D32s_v3", 
-                "Standard_D64-32s_v3", 
-                "Standard_E32s_v3",
-                "Standard_E32-8s_v3", 
-                "Standard_F32s_v2", 
-                "Standard_DS15_v2", 
-                "Standard_D40s_v3", 
-                "Standard_D64s_v3",
-                "Standard_E64s_v3", 
-                "Standard_E64-16s_v3", 
-                "Standard_E64-32s_v3", 
-                "Standard_F64s_v2", 
-                "Standard_F72s_v2", 
-                "Standard_L8s_v2", 
-                "Standard_L16s_v2", 
-                "Standard_L32s_v2", 
-                "Standard_L64s_v2", 
-                "Standard_L96s_v2", 
-                "Standard_D4s_v3", 
-                "Standard_DS2_v2", 
-                "Standard_E4s_v3", 
-                "Standard_F2s", 
-                "Standard_F4s_v2",
-                "Standard_DS11_v2"
-            ]
-        },
-        "vnetName": {
-            "type": "string",
-            "defaultValue": "vnet",
-            "metadata": {
-                "description": "The HANA VNET"
-            }
-        },
-        "SubnetName": {
-            "type": "string",
-            "defaultValue": "appsubnet",
-            "metadata": {
-                "description": "The application tier subnet name"
-            }
-        },
-        "VMUserName": {
-            "type": "string",
-            "metadata": {
-                "description": "Username for the Virtual Machines"
-            },
-            "defaultValue": "testuser"
-        },
-        "VMPassword": {
-            "type": "securestring",
-            "metadata": {
-                "description": "Password for the Virtual Machine"
-            }
-        },
-        "OperatingSystem": {
-            "type": "string",
-            "metadata": {
-                "description": "Operating system for HANA Machine"
-            },
-            "defaultValue": "SLES for SAP 12 SP3",
-            "allowedValues": [
-                "Windows Server 2016 Datacenter",                
-                "SLES for SAP 12 SP3",
-                "SLES for SAP 12 SP4",
-                "SLES for SAP 12 SP2",
-                "RHEL 7.2 for SAP HANA"
-            ]
-        },
-        "ExistingNetworkResourceGroup": {
-            "type": "string",
-            "metadata": {
-                "description": "Type in the name of the Resource Group for an existing network or leave no to use the same one"
-            },
-            "defaultValue": "no"
-        },
-        "StaticIP1": {
-            "type": "string",
-            "metadata": {
-                "description": "IP Address for the ASCS  VM when Static IP Allocation Method has been selected"
-            },
-            "defaultValue": "10.0.1.17"
-        },
-        "StaticIP2": {
-            "type": "string",
-            "metadata": {
-                "description": "IP Address for the ERS VM when Static IP Allocation Method has been selected"
-            },
-            "defaultValue": "10.0.1.18"
-        },
-        "iSCSIIP": {
-            "type": "string",
-            "metadata": {
-                "description": "IP Address for the iscsi server"
-            },
-            "defaultValue": "10.0.2.6"
-        },
-        "ASCSLBIP": {
-            "type": "string",
-            "metadata": {
-                "description": "IP Address for the internal load balancer ASCS frontend"
-            },
-            "defaultValue": "10.0.1.20"
-        },
-        "ERSLBIP": {
-            "type": "string",
-            "metadata": {
-                "description": "IP Address for the internal load balancer ERS frontend"
-            },
-            "defaultValue": "10.0.1.21"
-        },
-        "ASCSINSTANCE": {
-            "type": "string",
-            "metadata": {
-                "description": "Instance number for the ASCS install"
-            },
-            "defaultValue": "00"
-        },        
-        "ERSINSTANCE": {
-            "type": "string",
-            "metadata": {
-                "description": "Instance number for the ERS install"
-            },
-            "defaultValue": "01"
-        },         
-        "SubscriptionEmail": {
-            "type": "string",
-            "metadata": {
-                "description": "OS Subscription Email for BYOS, blank for PAYG"
-            },
-            "defaultValue": ""
-        },
-        "SubscriptionID": {
-            "type": "string",
-            "metadata": {
-                "description": "OS Subscription ID for BYOS, blank for PAYG"
-            },
-            "defaultValue": ""
-        },
-        "SMTUri": {
-            "type": "string",
-            "metadata": {
-                "description": "SMT URI, blank for none"
-            },
-            "defaultValue": ""
-        }
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "prefix": {
+      "type": "string",
+      "metadata": {
+        "description": "prefix for resource naming"
+      }
     },
-    "variables": {
-        "prefix": "[toLower(parameters('prefix'))]",
-        "vmName1": "[toLower(parameters('vmName1'))]",
-        "vmName2": "[toLower(parameters('vmName2'))]",
-        "baseUri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-ascs-cluster",
-        "repoUri": "[variables('baseUri')]",
-        "smallUri": "[concat(variables('baseUri'), '/small-ascs.json')]",
-        "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
-        "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
-        "vmSizeArray": "[split(parameters('vmSize'),' ')]",
-        "vmSize": "[variables('vmSizeArray')[0]]",
-        "avSetNameDB": "[concat(variables('prefix'), '-avset-ascs')]",
-        "loadBalancerName": "[concat(variables('prefix'), 'ascslb')]",
-        "diagStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]"
+    "VMName1": {
+      "type": "string",
+      "metadata": {
+        "description": "First VM Name"
+      }
     },
-    "resources": [
-        {
-            "type": "Microsoft.Storage/storageAccounts",
-            "name": "[variables('diagStorageAccountName')]",
-            "apiVersion": "2016-01-01",
-            "location": "[resourceGroup().location]",
-            "sku": {
-                "name": "Standard_LRS"
-            },
-            "kind": "Storage",
-            "properties": {}
-        },
-        {
-            "type": "Microsoft.Compute/availabilitySets",
-            "name": "[variables('avSetNameDB')]",
-            "apiVersion": "2017-03-30",
-            "location": "[resourceGroup().location]",
-            "sku": {
-                "name": "Aligned"
-            },
+    "VMName2": {
+      "type": "string",
+      "metadata": {
+        "description": "Second VM Name"
+      }
+    },
+    "VMSize": {
+      "type": "string",
+      "metadata": {
+        "description": "VM Size"
+      },
+      "defaultValue": "Standard_DS3_v2",
+      "allowedValues": [
+        "Standard_DS3_v2",
+        "Standard_DS12_v2",
+        "Standard_DS13-4_v2",
+        "Standard_DS14-4_v2",
+        "Standard_F4s",
+        "Standard_D2s_v3",
+        "Standard_D4s_v3",
+        "Standard_D8s_v3",
+        "Standard_D32-8s_v3",
+        "Standard_E8s_v3",
+        "Standard_F8s_v2",
+        "Standard_DS4_v2",
+        "Standard_DS13_v2",
+        "Standard_DS14-8_v2",
+        "Standard_F8s",
+        "Standard_D16s_v3",
+        "Standard_D32-16s_v3",
+        "Standard_D64-16s_v3",
+        "Standard_E16s_v3",
+        "Standard_E32-16s_v3",
+        "Standard_F16s_v2",
+        "Standard_D5_v2",
+        "Standard_DS5_v2",
+        "Standard_DS14_v2",
+        "Standard_F16s",
+        "Standard_D32s_v3",
+        "Standard_D64-32s_v3",
+        "Standard_E32s_v3",
+        "Standard_E32-8s_v3",
+        "Standard_F32s_v2",
+        "Standard_DS15_v2",
+        "Standard_D40s_v3",
+        "Standard_D64s_v3",
+        "Standard_E64s_v3",
+        "Standard_E64-16s_v3",
+        "Standard_E64-32s_v3",
+        "Standard_F64s_v2",
+        "Standard_F72s_v2",
+        "Standard_L8s_v2",
+        "Standard_L16s_v2",
+        "Standard_L32s_v2",
+        "Standard_L64s_v2",
+        "Standard_L96s_v2",
+        "Standard_D4s_v3",
+        "Standard_DS2_v2",
+        "Standard_E4s_v3",
+        "Standard_F2s",
+        "Standard_F4s_v2",
+        "Standard_DS11_v2"
+      ]
+    },
+    "vnetName": {
+      "type": "string",
+      "defaultValue": "vnet",
+      "metadata": {
+        "description": "The HANA VNET"
+      }
+    },
+    "SubnetName": {
+      "type": "string",
+      "defaultValue": "appsubnet",
+      "metadata": {
+        "description": "The application tier subnet name"
+      }
+    },
+    "VMUserName": {
+      "type": "string",
+      "metadata": {
+        "description": "Username for the Virtual Machines"
+      },
+      "defaultValue": "testuser"
+    },
+    "VMPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Password for the Virtual Machine"
+      }
+    },
+    "OperatingSystem": {
+      "type": "string",
+      "metadata": {
+        "description": "Operating system for HANA Machine"
+      },
+      "defaultValue": "SLES for SAP 12 SP3",
+      "allowedValues": [
+        "Windows Server 2016 Datacenter",
+        "SLES for SAP 12 SP3",
+        "SLES for SAP 12 SP4",
+        "SLES for SAP 12 SP2",
+        "RHEL 7.2 for SAP HANA"
+      ]
+    },
+    "ExistingNetworkResourceGroup": {
+      "type": "string",
+      "metadata": {
+        "description": "Type in the name of the Resource Group for an existing network or leave no to use the same one"
+      },
+      "defaultValue": "no"
+    },
+    "StaticIP1": {
+      "type": "string",
+      "metadata": {
+        "description": "IP Address for the ASCS  VM when Static IP Allocation Method has been selected"
+      },
+      "defaultValue": "10.0.1.17"
+    },
+    "StaticIP2": {
+      "type": "string",
+      "metadata": {
+        "description": "IP Address for the ERS VM when Static IP Allocation Method has been selected"
+      },
+      "defaultValue": "10.0.1.18"
+    },
+    "iSCSIIP": {
+      "type": "string",
+      "metadata": {
+        "description": "IP Address for the iscsi server"
+      },
+      "defaultValue": "10.0.2.6"
+    },
+    "ASCSLBIP": {
+      "type": "string",
+      "metadata": {
+        "description": "IP Address for the internal load balancer ASCS frontend"
+      },
+      "defaultValue": "10.0.1.20"
+    },
+    "ERSLBIP": {
+      "type": "string",
+      "metadata": {
+        "description": "IP Address for the internal load balancer ERS frontend"
+      },
+      "defaultValue": "10.0.1.21"
+    },
+    "ASCSINSTANCE": {
+      "type": "string",
+      "metadata": {
+        "description": "Instance number for the ASCS install"
+      },
+      "defaultValue": "00"
+    },
+    "ERSINSTANCE": {
+      "type": "string",
+      "metadata": {
+        "description": "Instance number for the ERS install"
+      },
+      "defaultValue": "01"
+    },
+    "SubscriptionEmail": {
+      "type": "string",
+      "metadata": {
+        "description": "OS Subscription Email for BYOS, blank for PAYG"
+      },
+      "defaultValue": ""
+    },
+    "SubscriptionID": {
+      "type": "string",
+      "metadata": {
+        "description": "OS Subscription ID for BYOS, blank for PAYG"
+      },
+      "defaultValue": ""
+    },
+    "SMTUri": {
+      "type": "string",
+      "metadata": {
+        "description": "SMT URI, blank for none"
+      },
+      "defaultValue": ""
+    }
+  },
+  "variables": {
+    "prefix": "[toLower(parameters('prefix'))]",
+    "vmName1": "[toLower(parameters('vmName1'))]",
+    "vmName2": "[toLower(parameters('vmName2'))]",
+    "baseUri": "https://raw.githubusercontent.com/bqtrinh/AzQ/mastersap-ascs-cluster",
+    "repoUri": "[variables('baseUri')]",
+    "smallUri": "[concat(variables('baseUri'), '/small-ascs.json')]",
+    "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
+    "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
+    "vmSizeArray": "[split(parameters('vmSize'),' ')]",
+    "vmSize": "[variables('vmSizeArray')[0]]",
+    "avSetNameDB": "[concat(variables('prefix'), '-avset-ascs')]",
+    "loadBalancerName": "[concat(variables('prefix'), 'ascslb')]",
+    "diagStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[variables('diagStorageAccountName')]",
+      "apiVersion": "2016-01-01",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "Storage",
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[variables('avSetNameDB')]",
+      "apiVersion": "2017-03-30",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "Aligned"
+      },
+      "properties": {
+        "platformFaultDomainCount": 2,
+        "platformUpdateDomainCount": 20
+      }
+    },
+    {
+      "type": "Microsoft.Network/loadBalancers",
+      "sku": {
+        "name": "Basic",
+        "tier": "Regional"
+      },
+      "name": "[variables('loadBalancerName')]",
+      "apiVersion": "2018-01-01",
+      "location": "[resourceGroup().location]",
+      "scale": null,
+      "properties": {
+        "frontendIPConfigurations": [
+          {
+            "name": "ASCSFrontEnd",
             "properties": {
-                "platformFaultDomainCount": 2,
-                "platformUpdateDomainCount": 20
+              "privateIPAddress": "[parameters('ASCSLBIP')]",
+              "privateIPAllocationMethod": "Static",
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              }
             }
-        },
-        {
-            "type": "Microsoft.Network/loadBalancers",
-            "sku": {
-                "name": "Basic",
-                "tier": "Regional"
-            },
-            "name": "[variables('loadBalancerName')]",
-            "apiVersion": "2018-01-01",
-            "location": "[resourceGroup().location]",
-            "scale": null,
+          },
+          {
+            "name": "ERSFrontEnd",
             "properties": {
-                "frontendIPConfigurations": [
-                    {
-                        "name": "ASCSFrontEnd",
-                        "properties": {
-                            "privateIPAddress": "[parameters('ASCSLBIP')]",
-                            "privateIPAllocationMethod": "Static",
-                            "subnet": {
-                                "id": "[variables('subnetRef')]"
-                            }
-                        }
-                    },
-                    {
-                        "name": "ERSFrontEnd",
-                        "properties": {
-                            "privateIPAddress": "[parameters('ERSLBIP')]",
-                            "privateIPAllocationMethod": "Static",
-                            "subnet": {
-                                "id": "[variables('subnetRef')]"
-                            }
-                        }
-                    }                    
-                ],
-                "loadBalancingRules": [
-                    {
-                        "name": "ascs-lb-32inst",
-                        "properties": {
-                            "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ASCSFrontEnd')]"
-                            },
-                            "frontendPort": "[concat('32', parameters('ASCSINSTANCE'))]",
-                            "backendPort": "[concat('32', parameters('ASCSINSTANCE'))]",
-                            "enableFloatingIP": true,
-                            "idleTimeoutInMinutes": 30,
-                            "protocol": "Tcp",
-                            "loadDistribution": "Default",
-                            "disableOutboundSnat": false,
-                            "backendAddressPool": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
-                            },
-                            "probe": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ascsprobe')]"
-                            }
-                        }
-                    },
-                    {
-                        "name": "ascs-lb-36inst",
-                        "properties": {
-                            "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ASCSFrontEnd')]"
-                            },
-                            "frontendPort": "[concat('36', parameters('ASCSINSTANCE'))]",
-                            "backendPort": "[concat('36', parameters('ASCSINSTANCE'))]",
-                            "enableFloatingIP": true,
-                            "idleTimeoutInMinutes": 30,
-                            "protocol": "Tcp",
-                            "loadDistribution": "Default",
-                            "disableOutboundSnat": false,
-                            "backendAddressPool": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
-                            },
-                            "probe": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ascsprobe')]"
-                            }
-                        }
-                    },
-                    {
-                        "name": "ascs-lb-39inst",
-                        "properties": {
-                            "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ASCSFrontEnd')]"
-                            },
-                            "frontendPort": "[concat('39', parameters('ASCSINSTANCE'))]",
-                            "backendPort": "[concat('39', parameters('ASCSINSTANCE'))]",
-                            "enableFloatingIP": true,
-                            "idleTimeoutInMinutes": 30,
-                            "protocol": "Tcp",
-                            "loadDistribution": "Default",
-                            "disableOutboundSnat": false,
-                            "backendAddressPool": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
-                            },
-                            "probe": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ascsprobe')]"
-                            }
-                        }
-                    },
-                    {
-                        "name": "ascs-lb-81inst",
-                        "properties": {
-                            "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ASCSFrontEnd')]"
-                            },
-                            "frontendPort": "[concat('81', parameters('ASCSINSTANCE'))]",
-                            "backendPort": "[concat('81', parameters('ASCSINSTANCE'))]",
-                            "enableFloatingIP": true,
-                            "idleTimeoutInMinutes": 30,
-                            "protocol": "Tcp",
-                            "loadDistribution": "Default",
-                            "disableOutboundSnat": false,
-                            "backendAddressPool": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
-                            },
-                            "probe": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ascsprobe')]"
-                            }
-                        }
-                    },
-                    {
-                        "name": "ascs-lb-5inst13",
-                        "properties": {
-                            "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ASCSFrontEnd')]"
-                            },
-                            "frontendPort": "[concat('5', parameters('ASCSINSTANCE'),'13')]",
-                            "backendPort": "[concat('5', parameters('ASCSINSTANCE'),'13')]",
-                            "enableFloatingIP": true,
-                            "idleTimeoutInMinutes": 30,
-                            "protocol": "Tcp",
-                            "loadDistribution": "Default",
-                            "disableOutboundSnat": false,
-                            "backendAddressPool": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
-                            },
-                            "probe": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ascsprobe')]"
-                            }
-                        }
-                    },
-                    {
-                        "name": "ascs-lb-5inst14",
-                        "properties": {
-                            "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ASCSFrontEnd')]"
-                            },
-                            "frontendPort": "[concat('5', parameters('ASCSINSTANCE'),'14')]",
-                            "backendPort": "[concat('5', parameters('ASCSINSTANCE'),'14')]",
-                            "enableFloatingIP": true,
-                            "idleTimeoutInMinutes": 30,
-                            "protocol": "Tcp",
-                            "loadDistribution": "Default",
-                            "disableOutboundSnat": false,
-                            "backendAddressPool": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
-                            },
-                            "probe": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ascsprobe')]"
-                            }
-                        }
-                    },
-                    {
-                        "name": "ascs-lb-5inst16",
-                        "properties": {
-                            "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ASCSFrontEnd')]"
-                            },
-                            "frontendPort": "[concat('5', parameters('ASCSINSTANCE'),'16')]",
-                            "backendPort": "[concat('5', parameters('ASCSINSTANCE'),'16')]",
-                            "enableFloatingIP": true,
-                            "idleTimeoutInMinutes": 30,
-                            "protocol": "Tcp",
-                            "loadDistribution": "Default",
-                            "disableOutboundSnat": false,
-                            "backendAddressPool": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
-                            },
-                            "probe": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ascsprobe')]"
-                            }
-                        }
-                    },
+              "privateIPAddress": "[parameters('ERSLBIP')]",
+              "privateIPAllocationMethod": "Static",
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              }
+            }
+          }
+        ],
+        "loadBalancingRules": [
+          {
+            "name": "ascs-lb-32inst",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ASCSFrontEnd')]"
+              },
+              "frontendPort": "[concat('32', parameters('ASCSINSTANCE'))]",
+              "backendPort": "[concat('32', parameters('ASCSINSTANCE'))]",
+              "enableFloatingIP": true,
+              "idleTimeoutInMinutes": 30,
+              "protocol": "Tcp",
+              "loadDistribution": "Default",
+              "disableOutboundSnat": false,
+              "backendAddressPool": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+              },
+              "probe": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ascsprobe')]"
+              }
+            }
+          },
+          {
+            "name": "ascs-lb-36inst",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ASCSFrontEnd')]"
+              },
+              "frontendPort": "[concat('36', parameters('ASCSINSTANCE'))]",
+              "backendPort": "[concat('36', parameters('ASCSINSTANCE'))]",
+              "enableFloatingIP": true,
+              "idleTimeoutInMinutes": 30,
+              "protocol": "Tcp",
+              "loadDistribution": "Default",
+              "disableOutboundSnat": false,
+              "backendAddressPool": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+              },
+              "probe": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ascsprobe')]"
+              }
+            }
+          },
+          {
+            "name": "ascs-lb-39inst",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ASCSFrontEnd')]"
+              },
+              "frontendPort": "[concat('39', parameters('ASCSINSTANCE'))]",
+              "backendPort": "[concat('39', parameters('ASCSINSTANCE'))]",
+              "enableFloatingIP": true,
+              "idleTimeoutInMinutes": 30,
+              "protocol": "Tcp",
+              "loadDistribution": "Default",
+              "disableOutboundSnat": false,
+              "backendAddressPool": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+              },
+              "probe": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ascsprobe')]"
+              }
+            }
+          },
+          {
+            "name": "ascs-lb-81inst",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ASCSFrontEnd')]"
+              },
+              "frontendPort": "[concat('81', parameters('ASCSINSTANCE'))]",
+              "backendPort": "[concat('81', parameters('ASCSINSTANCE'))]",
+              "enableFloatingIP": true,
+              "idleTimeoutInMinutes": 30,
+              "protocol": "Tcp",
+              "loadDistribution": "Default",
+              "disableOutboundSnat": false,
+              "backendAddressPool": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+              },
+              "probe": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ascsprobe')]"
+              }
+            }
+          },
+          {
+            "name": "ascs-lb-5inst13",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ASCSFrontEnd')]"
+              },
+              "frontendPort": "[concat('5', parameters('ASCSINSTANCE'),'13')]",
+              "backendPort": "[concat('5', parameters('ASCSINSTANCE'),'13')]",
+              "enableFloatingIP": true,
+              "idleTimeoutInMinutes": 30,
+              "protocol": "Tcp",
+              "loadDistribution": "Default",
+              "disableOutboundSnat": false,
+              "backendAddressPool": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+              },
+              "probe": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ascsprobe')]"
+              }
+            }
+          },
+          {
+            "name": "ascs-lb-5inst14",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ASCSFrontEnd')]"
+              },
+              "frontendPort": "[concat('5', parameters('ASCSINSTANCE'),'14')]",
+              "backendPort": "[concat('5', parameters('ASCSINSTANCE'),'14')]",
+              "enableFloatingIP": true,
+              "idleTimeoutInMinutes": 30,
+              "protocol": "Tcp",
+              "loadDistribution": "Default",
+              "disableOutboundSnat": false,
+              "backendAddressPool": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+              },
+              "probe": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ascsprobe')]"
+              }
+            }
+          },
+          {
+            "name": "ascs-lb-5inst16",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ASCSFrontEnd')]"
+              },
+              "frontendPort": "[concat('5', parameters('ASCSINSTANCE'),'16')]",
+              "backendPort": "[concat('5', parameters('ASCSINSTANCE'),'16')]",
+              "enableFloatingIP": true,
+              "idleTimeoutInMinutes": 30,
+              "protocol": "Tcp",
+              "loadDistribution": "Default",
+              "disableOutboundSnat": false,
+              "backendAddressPool": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+              },
+              "probe": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ascsprobe')]"
+              }
+            }
+          },
 
-
-                    {
-                        "name": "ers-lb-33inst",
-                        "properties": {
-                            "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ERSFrontEnd')]"
-                            },
-                            "frontendPort": "[concat('33', parameters('ERSINSTANCE'))]",
-                            "backendPort": "[concat('33', parameters('ERSINSTANCE'))]",
-                            "enableFloatingIP": true,
-                            "idleTimeoutInMinutes": 30,
-                            "protocol": "Tcp",
-                            "loadDistribution": "Default",
-                            "disableOutboundSnat": false,
-                            "backendAddressPool": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
-                            },
-                            "probe": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ersprobe')]"
-                            }
-                        }
-                    },
-                    {
-                        "name": "ers-lb-5inst13",
-                        "properties": {
-                            "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ERSFrontEnd')]"
-                            },
-                            "frontendPort": "[concat('5', parameters('ERSINSTANCE'),'13')]",
-                            "backendPort": "[concat('5', parameters('ERSINSTANCE'),'13')]",
-                            "enableFloatingIP": true,
-                            "idleTimeoutInMinutes": 30,
-                            "protocol": "Tcp",
-                            "loadDistribution": "Default",
-                            "disableOutboundSnat": false,
-                            "backendAddressPool": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
-                            },
-                            "probe": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ersprobe')]"
-                            }
-                        }
-                    },
-                    {
-                        "name": "ers-lb-5inst14",
-                        "properties": {
-                            "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ERSFrontEnd')]"
-                            },
-                            "frontendPort": "[concat('5', parameters('ERSINSTANCE'),'14')]",
-                            "backendPort": "[concat('5', parameters('ERSINSTANCE'),'14')]",
-                            "enableFloatingIP": true,
-                            "idleTimeoutInMinutes": 30,
-                            "protocol": "Tcp",
-                            "loadDistribution": "Default",
-                            "disableOutboundSnat": false,
-                            "backendAddressPool": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
-                            },
-                            "probe": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ersprobe')]"
-                            }
-                        }
-                    },
-                    {
-                        "name": "ers-lb-5inst16",
-                        "properties": {
-                            "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ERSFrontEnd')]"
-                            },
-                            "frontendPort": "[concat('5', parameters('ERSINSTANCE'),'16')]",
-                            "backendPort": "[concat('5', parameters('ERSINSTANCE'),'16')]",
-                            "enableFloatingIP": true,
-                            "idleTimeoutInMinutes": 30,
-                            "protocol": "Tcp",
-                            "loadDistribution": "Default",
-                            "disableOutboundSnat": false,
-                            "backendAddressPool": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
-                            },
-                            "probe": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ersprobe')]"
-                            }
-                        }
-                    }
-                ],
-                "backendAddressPools": [
-                    {
-                        "name": "BackendPool1"
-                    }
-                ],
-                "probes": [
-                    {
-                        "properties": {
-                            "protocol": "Tcp",
-                            "port": "[concat('620', parameters('ASCSINSTANCE'))]",
-                            "intervalInSeconds": 5,
-                            "numberOfProbes": 2
-                        },
-                        "name": "ascsprobe"
-                    },
-                    {
-                        "properties": {
-                            "protocol": "Tcp",
-                            "port":  "[concat('621', parameters('ERSINSTANCE'))]",
-                            "intervalInSeconds": 5,
-                            "numberOfProbes": 2
-                        },
-                        "name": "ersprobe"
-                    }                    
-                ],
-                "inboundNatRules": [],
-                "outboundNatRules": [],
-                "inboundNatPools": []
+          {
+            "name": "ers-lb-33inst",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ERSFrontEnd')]"
+              },
+              "frontendPort": "[concat('33', parameters('ERSINSTANCE'))]",
+              "backendPort": "[concat('33', parameters('ERSINSTANCE'))]",
+              "enableFloatingIP": true,
+              "idleTimeoutInMinutes": 30,
+              "protocol": "Tcp",
+              "loadDistribution": "Default",
+              "disableOutboundSnat": false,
+              "backendAddressPool": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+              },
+              "probe": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ersprobe')]"
+              }
+            }
+          },
+          {
+            "name": "ers-lb-5inst13",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ERSFrontEnd')]"
+              },
+              "frontendPort": "[concat('5', parameters('ERSINSTANCE'),'13')]",
+              "backendPort": "[concat('5', parameters('ERSINSTANCE'),'13')]",
+              "enableFloatingIP": true,
+              "idleTimeoutInMinutes": 30,
+              "protocol": "Tcp",
+              "loadDistribution": "Default",
+              "disableOutboundSnat": false,
+              "backendAddressPool": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+              },
+              "probe": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ersprobe')]"
+              }
+            }
+          },
+          {
+            "name": "ers-lb-5inst14",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ERSFrontEnd')]"
+              },
+              "frontendPort": "[concat('5', parameters('ERSINSTANCE'),'14')]",
+              "backendPort": "[concat('5', parameters('ERSINSTANCE'),'14')]",
+              "enableFloatingIP": true,
+              "idleTimeoutInMinutes": 30,
+              "protocol": "Tcp",
+              "loadDistribution": "Default",
+              "disableOutboundSnat": false,
+              "backendAddressPool": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+              },
+              "probe": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ersprobe')]"
+              }
+            }
+          },
+          {
+            "name": "ers-lb-5inst16",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ERSFrontEnd')]"
+              },
+              "frontendPort": "[concat('5', parameters('ERSINSTANCE'),'16')]",
+              "backendPort": "[concat('5', parameters('ERSINSTANCE'),'16')]",
+              "enableFloatingIP": true,
+              "idleTimeoutInMinutes": 30,
+              "protocol": "Tcp",
+              "loadDistribution": "Default",
+              "disableOutboundSnat": false,
+              "backendAddressPool": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+              },
+              "probe": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ersprobe')]"
+              }
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "BackendPool1"
+          }
+        ],
+        "probes": [
+          {
+            "properties": {
+              "protocol": "Tcp",
+              "port": "[concat('620', parameters('ASCSINSTANCE'))]",
+              "intervalInSeconds": 5,
+              "numberOfProbes": 2
             },
-            "dependsOn": [
-                "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]"
-            ]
-        },
-        {
-            "apiVersion": "2016-09-01",
-            "name": "[concat('SmallLinkedTemplate', parameters('VMName1'))]",
-            "type": "Microsoft.Resources/deployments",
-            "dependsOn": [
-                "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]",
-                "[resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName'))]",
-                "[resourceId('Microsoft.Storage/storageAccounts', variables('diagStorageAccountName'))]"       
-            ],
+            "name": "ascsprobe"
+          },
+          {
             "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[variables('smallUri')]"
-                },
-                "debugSetting": {
-                    "detailLevel": "requestContent, responseContent"
-                },
-                "parameters": {
-                    "vmName1": {
-                        "value": "[parameters('vmName1')]"
-                    },
-                    "vmName2": {
-                        "value": "[parameters('vmName2')]"
-                    },
-                    "SubnetRef": {
-                        "value": "[variables('subnetRef')]"
-                    },
-                    "OperatingSystem": {
-                        "value": "[parameters('OperatingSystem')]"
-                    },
-                    "vmUserName": {
-                        "value": "[parameters('vmUserName')]"
-                    },
-                    "vmPassword": {
-                        "value": "[parameters('vmPassword')]"
-                    },
-                    "vmSize": {
-                        "value": "[variables('vmSize')]"
-                    },
-                    "StaticIP1": {
-                        "value": "[parameters('StaticIP1')]"
-                    },
-                    "StaticIP2": {
-                        "value": "[parameters('StaticIP2')]"
-                    },
-                    "ISPRIMARY": {
-                        "value": "yes"
-                    },
-                    "repoUri": {
-                        "value": "[variables('repoUri')]"
-                    },
-                    "ISCSIIP": {
-                        "value": "[parameters('iSCSIIP')]"
-                    },
-                    "loadBalancerName": {
-                        "value": "[variables('loadBalancerName')]"
-                    },
-                    "LBIP": {
-                        "value": "[parameters('ASCSLBIP')]"
-                    },
-                    "avSetObj": {
-                        "value": {
-                            "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]"
-                        }
-                    },
-                    "SubscriptionEmail": {
-                        "value": "[parameters('SubscriptionEmail')]"
-                    },
-                    "SubscriptionID": {
-                        "value": "[parameters('SubscriptionID')]"
-                    },
-                    "SMTUri": {
-                        "value": "[parameters('SMTUri')]"
-                    },
-                    "diagStorageURI": {
-                        "value": "[concat(reference(variables('diagStorageAccountName'), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob)]"
-                    }
-                }
-            }
+              "protocol": "Tcp",
+              "port": "[concat('621', parameters('ERSINSTANCE'))]",
+              "intervalInSeconds": 5,
+              "numberOfProbes": 2
+            },
+            "name": "ersprobe"
+          }
+        ],
+        "inboundNatRules": [],
+        "outboundNatRules": [],
+        "inboundNatPools": []
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]"
+      ]
+    },
+    {
+      "apiVersion": "2016-09-01",
+      "name": "[concat('SmallLinkedTemplate', parameters('VMName1'))]",
+      "type": "Microsoft.Resources/deployments",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]",
+        "[resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('diagStorageAccountName'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('smallUri')]"
         },
-        {
-            "apiVersion": "2016-09-01",
-            "name": "[concat('SmallLinkedTemplate', parameters('VMName2'))]",
-            "type": "Microsoft.Resources/deployments",
-            "dependsOn": [
-                "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]",
-                "[resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName'))]"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[variables('smallUri')]"
-                },
-                "parameters": {
-                    "vmName1": {
-                        "value": "[parameters('vmName2')]"
-                    },
-                    "vmName2": {
-                        "value": "[parameters('vmName1')]"
-                    },
-                    "SubnetRef": {
-                        "value": "[variables('subnetRef')]"
-                    },
-                    "OperatingSystem": {
-                        "value": "[parameters('OperatingSystem')]"
-                    },
-                    "vmUserName": {
-                        "value": "[parameters('vmUserName')]"
-                    },
-                    "vmPassword": {
-                        "value": "[parameters('vmPassword')]"
-                    },
-                    "vmSize": {
-                        "value": "[variables('vmSize')]"
-                    },
-                    "StaticIP1": {
-                        "value": "[parameters('StaticIP2')]"
-                    },
-                    "StaticIP2": {
-                        "value": "[parameters('StaticIP1')]"
-                    },
-                    "ISPRIMARY": {
-                        "value": "no"
-                    },
-                    "repoUri": {
-                        "value": "[variables('repoUri')]"
-                    },
-                    "ISCSIIP": {
-                        "value": "10.0.6.4"
-                    },
-                    "loadBalancerName": {
-                        "value": "[variables('loadBalancerName')]"
-                    },
-                    "LBIP": {
-                        "value": "[parameters('ASCSLBIP')]"
-                    },
-                    "avSetObj": {
-                        "value": {
-                            "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]"
-                        }
-                    },
-                    "SubscriptionEmail": {
-                        "value": "parameters('SubscriptionEmail')]"
-                    },
-                    "SubscriptionID": {
-                        "value": "[parameters('SubscriptionID')]"
-                    },
-                    "SMTUri": {
-                        "value": "[parameters('SMTUri')]"
-                    },
-                    "diagStorageURI": {
-                        "value": "[concat(reference(variables('diagStorageAccountName'), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob)]"
-                    }
-                }
+        "debugSetting": {
+          "detailLevel": "requestContent, responseContent"
+        },
+        "parameters": {
+          "vmName1": {
+            "value": "[parameters('vmName1')]"
+          },
+          "vmName2": {
+            "value": "[parameters('vmName2')]"
+          },
+          "SubnetRef": {
+            "value": "[variables('subnetRef')]"
+          },
+          "OperatingSystem": {
+            "value": "[parameters('OperatingSystem')]"
+          },
+          "vmUserName": {
+            "value": "[parameters('vmUserName')]"
+          },
+          "vmPassword": {
+            "value": "[parameters('vmPassword')]"
+          },
+          "vmSize": {
+            "value": "[variables('vmSize')]"
+          },
+          "StaticIP1": {
+            "value": "[parameters('StaticIP1')]"
+          },
+          "StaticIP2": {
+            "value": "[parameters('StaticIP2')]"
+          },
+          "ISPRIMARY": {
+            "value": "yes"
+          },
+          "repoUri": {
+            "value": "[variables('repoUri')]"
+          },
+          "ISCSIIP": {
+            "value": "[parameters('iSCSIIP')]"
+          },
+          "loadBalancerName": {
+            "value": "[variables('loadBalancerName')]"
+          },
+          "LBIP": {
+            "value": "[parameters('ASCSLBIP')]"
+          },
+          "avSetObj": {
+            "value": {
+              "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]"
             }
+          },
+          "SubscriptionEmail": {
+            "value": "[parameters('SubscriptionEmail')]"
+          },
+          "SubscriptionID": {
+            "value": "[parameters('SubscriptionID')]"
+          },
+          "SMTUri": {
+            "value": "[parameters('SMTUri')]"
+          },
+          "diagStorageURI": {
+            "value": "[concat(reference(variables('diagStorageAccountName'), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob)]"
+          }
         }
-    ],
-    "outputs": {}
+      }
+    },
+    {
+      "apiVersion": "2016-09-01",
+      "name": "[concat('SmallLinkedTemplate', parameters('VMName2'))]",
+      "type": "Microsoft.Resources/deployments",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]",
+        "[resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('smallUri')]"
+        },
+        "parameters": {
+          "vmName1": {
+            "value": "[parameters('vmName2')]"
+          },
+          "vmName2": {
+            "value": "[parameters('vmName1')]"
+          },
+          "SubnetRef": {
+            "value": "[variables('subnetRef')]"
+          },
+          "OperatingSystem": {
+            "value": "[parameters('OperatingSystem')]"
+          },
+          "vmUserName": {
+            "value": "[parameters('vmUserName')]"
+          },
+          "vmPassword": {
+            "value": "[parameters('vmPassword')]"
+          },
+          "vmSize": {
+            "value": "[variables('vmSize')]"
+          },
+          "StaticIP1": {
+            "value": "[parameters('StaticIP2')]"
+          },
+          "StaticIP2": {
+            "value": "[parameters('StaticIP1')]"
+          },
+          "ISPRIMARY": {
+            "value": "no"
+          },
+          "repoUri": {
+            "value": "[variables('repoUri')]"
+          },
+          "ISCSIIP": {
+            "value": "10.0.6.4"
+          },
+          "loadBalancerName": {
+            "value": "[variables('loadBalancerName')]"
+          },
+          "LBIP": {
+            "value": "[parameters('ASCSLBIP')]"
+          },
+          "avSetObj": {
+            "value": {
+              "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]"
+            }
+          },
+          "SubscriptionEmail": {
+            "value": "parameters('SubscriptionEmail')]"
+          },
+          "SubscriptionID": {
+            "value": "[parameters('SubscriptionID')]"
+          },
+          "SMTUri": {
+            "value": "[parameters('SMTUri')]"
+          },
+          "diagStorageURI": {
+            "value": "[concat(reference(variables('diagStorageAccountName'), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob)]"
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {}
 }

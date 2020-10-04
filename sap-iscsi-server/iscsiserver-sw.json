@@ -1,121 +1,120 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "vmName": {
-            "type": "string",
-            "metadata": {
-                "description": "ISCSI VM name"
-            },
-            "defaultValue": "iscsiserver"
-        },
-        "customUri": {
-            "type": "string",
-            "metadata": {
-                "description": "Uri for SAP Bits"
-            }
-        },
-        "IQN1": {
-          "type": "string",
-          "metadata": {
-            "description": "iSCSI IQN1 to present"
-          },
-          "defaultValue": "iqn.1991-05.com.microsoft:nfsserver-target"
-        },
-        "IQN1client1": {
-          "type": "string",
-          "metadata": {
-            "description": "iSCSI IQN1 client1"
-          },
-          "defaultValue": "iqn.1991-05.com.microsoft:nfsserver-target:nfsvm1"
-        },
-        "IQN1client2": {
-          "type": "string",
-          "metadata": {
-            "description": "iSCSI IQN1 client2"
-          },
-          "defaultValue": "iqn.1991-05.com.microsoft:nfsserver-target:nfsvm2"
-        },
-        "IQN2": {
-          "type": "string",
-          "metadata": {
-            "description": "iSCSI IQN2 to present"
-          },
-          "defaultValue": "iqn.1991-05.com.microsoft:hana-target"
-        },
-        "IQN2client1": {
-          "type": "string",
-          "metadata": {
-            "description": "iSCSI IQN2 client1"
-          },
-          "defaultValue": "iqn.1991-05.com.microsoft:hana-target:hanavm1"
-        },
-        "IQN2client2": {
-          "type": "string",
-          "metadata": {
-            "description": "iSCSI IQN2 client2"
-          },
-          "defaultValue": "iqn.1991-05.com.microsoft:hana-target:hanavm2"
-        },
-        "IQN3": {
-          "type": "string",
-          "metadata": {
-            "description": "iSCSI IQN3 to present"
-          },
-          "defaultValue": "iqn.1991-05.com.microsoft:ascs-target"
-        },
-        "IQN3client1": {
-          "type": "string",
-          "metadata": {
-            "description": "iSCSI IQN3 client1"
-          },
-          "defaultValue": "iqn.1991-05.com.microsoft:ascs-target:ascsvm1"
-        },
-        "IQN3client2": {
-          "type": "string",
-          "metadata": {
-            "description": "iSCSI IQN3 client2"
-          },
-          "defaultValue": "iqn.1991-05.com.microsoft:ascs-target:ascsvm2"
-        },
-        "_artifactsLocation": {
-            "type": "string",
-            "metadata": {
-              "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
-            },
-            "defaultValue": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/"
-          },
-          "_artifactsLocationSasToken": {
-            "type": "securestring",
-            "metadata": {
-              "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
-            },
-            "defaultValue": ""
-          }        
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmName": {
+      "type": "string",
+      "metadata": {
+        "description": "ISCSI VM name"
+      },
+      "defaultValue": "iscsiserver"
     },
-    "variables": {
+    "customUri": {
+      "type": "string",
+      "metadata": {
+        "description": "Uri for SAP Bits"
+      }
     },
-    "resources": [
-        {
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('vmName'),'/', 'CustomScript')]",
-            "apiVersion": "2017-12-01",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [ ],
-            "properties": {
-                "publisher": "Microsoft.Azure.Extensions",
-                "type": "CustomScript",
-                "typeHandlerVersion": "2.0",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                    "fileUris": [
-                        "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-iscsi-server/iscsiserver.sh"
-                    ],
-                    "commandToExecute": "[concat('bash iscsiserver.sh',' \"',parameters('IQN1'),'\" \"',parameters('IQN1client1'),'\" \"',parameters('IQN1client2'),'\" \"',parameters('IQN2'),'\" \"',parameters('IQN2client1'),'\" \"',parameters('IQN2client2') ,'\" \"',parameters('IQN3'),'\" \"',parameters('IQN3client1'),'\" \"',parameters('IQN3client2'),'\"')]"
-                },
-                "protectedSettings": {} 
-            }
-        }
-    ],
-    "outputs": {}
+    "IQN1": {
+      "type": "string",
+      "metadata": {
+        "description": "iSCSI IQN1 to present"
+      },
+      "defaultValue": "iqn.1991-05.com.microsoft:nfsserver-target"
+    },
+    "IQN1client1": {
+      "type": "string",
+      "metadata": {
+        "description": "iSCSI IQN1 client1"
+      },
+      "defaultValue": "iqn.1991-05.com.microsoft:nfsserver-target:nfsvm1"
+    },
+    "IQN1client2": {
+      "type": "string",
+      "metadata": {
+        "description": "iSCSI IQN1 client2"
+      },
+      "defaultValue": "iqn.1991-05.com.microsoft:nfsserver-target:nfsvm2"
+    },
+    "IQN2": {
+      "type": "string",
+      "metadata": {
+        "description": "iSCSI IQN2 to present"
+      },
+      "defaultValue": "iqn.1991-05.com.microsoft:hana-target"
+    },
+    "IQN2client1": {
+      "type": "string",
+      "metadata": {
+        "description": "iSCSI IQN2 client1"
+      },
+      "defaultValue": "iqn.1991-05.com.microsoft:hana-target:hanavm1"
+    },
+    "IQN2client2": {
+      "type": "string",
+      "metadata": {
+        "description": "iSCSI IQN2 client2"
+      },
+      "defaultValue": "iqn.1991-05.com.microsoft:hana-target:hanavm2"
+    },
+    "IQN3": {
+      "type": "string",
+      "metadata": {
+        "description": "iSCSI IQN3 to present"
+      },
+      "defaultValue": "iqn.1991-05.com.microsoft:ascs-target"
+    },
+    "IQN3client1": {
+      "type": "string",
+      "metadata": {
+        "description": "iSCSI IQN3 client1"
+      },
+      "defaultValue": "iqn.1991-05.com.microsoft:ascs-target:ascsvm1"
+    },
+    "IQN3client2": {
+      "type": "string",
+      "metadata": {
+        "description": "iSCSI IQN3 client2"
+      },
+      "defaultValue": "iqn.1991-05.com.microsoft:ascs-target:ascsvm2"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
+      },
+      "defaultValue": "https://raw.githubusercontent.com/bqtrinh/AzQ/master"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+      },
+      "defaultValue": ""
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(parameters('vmName'),'/', 'CustomScript')]",
+      "apiVersion": "2017-12-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [],
+      "properties": {
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "2.0",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "https://raw.githubusercontent.com/bqtrinh/AzQ/mastersap-iscsi-server/iscsiserver.sh"
+          ],
+          "commandToExecute": "[concat('bash iscsiserver.sh',' \"',parameters('IQN1'),'\" \"',parameters('IQN1client1'),'\" \"',parameters('IQN1client2'),'\" \"',parameters('IQN2'),'\" \"',parameters('IQN2client1'),'\" \"',parameters('IQN2client2') ,'\" \"',parameters('IQN3'),'\" \"',parameters('IQN3client1'),'\" \"',parameters('IQN3client2'),'\"')]"
+        },
+        "protectedSettings": {}
+      }
+    }
+  ],
+  "outputs": {}
 }

@@ -7,12 +7,11 @@ else
     source ./azuredeploy.cfg
 fi
 
-
 echo "installing ntp server software"
 az group deployment create \
 --name NTPDeployment \
 --resource-group "$rgname" \
---template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-ntp-server/ntpserver-sw.json" \
+--template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/mastersap-ntp-server/ntpserver-sw.json" \
 --parameters \
 vmUserName=$vmusername \
 ExistingNetworkResourceGroup="$rgname" \

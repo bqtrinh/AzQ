@@ -13,18 +13,18 @@ echo "creating additional application server"
 az group deployment create \
 --name NetWeaver-aas-Deployment \
 --resource-group "$rgname" \
-   --template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-netweaver-server/azuredeploy-nw-infra.json" \
-   --parameters \
-   vmName="$AASVMNAME" \
-   vmUserName="$vmusername" \
-   vmPassword="$vmpassword" \
-   vnetName="$vnetname" \
-   ExistingNetworkResourceGroup="$vnetrgname" \
-   vmSize="Standard_DS2_v2" \
-   osType="SLES 12 SP4" \
-   appAvailSetName="nwavailset" \
-   StaticIP="$AASIPADDR" \
-   subnetName="$appsubnetname" \
-   enableAcceleratedNetworking="no"
+--template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/mastersap-netweaver-server/azuredeploy-nw-infra.json" \
+--parameters \
+vmName="$AASVMNAME" \
+vmUserName="$vmusername" \
+vmPassword="$vmpassword" \
+vnetName="$vnetname" \
+ExistingNetworkResourceGroup="$vnetrgname" \
+vmSize="Standard_DS2_v2" \
+osType="SLES 12 SP4" \
+appAvailSetName="nwavailset" \
+StaticIP="$AASIPADDR" \
+subnetName="$appsubnetname" \
+enableAcceleratedNetworking="no"
 
 echo "additional application server created"

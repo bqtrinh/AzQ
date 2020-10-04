@@ -14,15 +14,15 @@ echo "creating nfs cluster"
 az group deployment create \
 --name ANFDeployment \
 --resource-group $rgname \
-   --template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-anf-service/sap-anf.json" \
-   --parameters \
-    ExistingNetworkResourceGroup="$vnetrgname" \
-    vnetName="$vnetname" \
-    subnetName="$anfsubnetName" \
-    netappAccountName="$netappAccountName" \
-    capacityPoolName="$capacityPoolName" \
-    capacityPoolSize="$capacityPoolSize" \
-    capacityPoolServiceLevel="Premium" \
+--template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/mastersap-anf-service/sap-anf.json" \
+--parameters \
+ExistingNetworkResourceGroup="$vnetrgname" \
+vnetName="$vnetname" \
+subnetName="$anfsubnetName" \
+netappAccountName="$netappAccountName" \
+capacityPoolName="$capacityPoolName" \
+capacityPoolSize="$capacityPoolSize" \
+capacityPoolServiceLevel="Premium" \
 vol1fp=$sapbitsFilePath \
 vol1ut=$sapbitsUsageThreshold \
 vol2fp=$hana1dataFilePath \
@@ -56,6 +56,6 @@ vol15ut=$ersUsageThreshold \
 vol16fp=$transFilePath \
 vol16ut=$transUsageThreshold \
 vol17fp=$usrsapsidFilePath \
-vol17ut=$usrsapsidUsageThreshold 
+vol17ut=$usrsapsidUsageThreshold
 
 echo "anf service created"

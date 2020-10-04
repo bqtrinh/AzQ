@@ -1,194 +1,188 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "vmName": {
-            "type": "string",
-            "metadata": {
-                "description": "Name of the Virtual Machine"
-            },
-            "defaultValue": "hanajb"
-        },
-        "vmUserName": {
-            "type": "string",
-            "metadata": {
-                "description": "Username for the Virtual Machine"
-            },
-            "defaultValue": "testuser"
-        },
-        "ExistingNetworkResourceGroup": {
-            "type": "string",
-            "metadata": {
-                "description": "Resource Group for the VNET where the VM will be placed"
-            }
-        },
-        "vnetName": {
-            "defaultValue": "vnet",
-            "type": "string",
-            "metadata": {
-                "description": "Virtual network name"
-            }
-        },
-        "subnetName": {
-            "defaultValue": "mgtsubnet",
-            "type": "string",
-            "metadata": {
-                "description": "subnet name"
-            }
-        },
-        "StaticIP": {
-            "defaultValue": "10.0.2.4",
-            "type": "string",
-            "metadata": {
-                "description": "StaticIP"
-            }
-        },
-        "vmPassword": {
-            "type": "securestring",
-            "metadata": {
-                "description": "Password for the Virtual Machine"
-            }
-        },
-        "customUri": {
-            "type": "string",
-            "metadata": {
-                "description": "Uri for SAP Bits"
-            }
-        },
-        "vmLocation": {
-            "type": "string",
-            "metadata": {
-                "description": "Location region for the Virtual Machine"
-            },
-            "defaultValue": ""
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Virtual Machine"
+      },
+      "defaultValue": "hanajb"
     },
-    "variables": {
-        "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
-        "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
-        "vNicName": "[concat(parameters('vmName'),'nic')]",
-        "PIPName": "[concat(parameters('vmName'),'pip')]",
-        "vhdStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]",
-        "scriptFolder": ".",
-        "scriptFileName": "hanastudio.ps1",
-        "fileuri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/hanastudio.ps1",
-        "scriptParameters": "[concat(' -BaseURI ', parameters('customUri'))]",
-        "vmlocation": "[if(greater(length(parameters('vmLocation')),0), parameters('vmLocation'),resourceGroup().location)]"
+    "vmUserName": {
+      "type": "string",
+      "metadata": {
+        "description": "Username for the Virtual Machine"
+      },
+      "defaultValue": "testuser"
     },
-    "resources": [
-        {
-            "type": "Microsoft.Storage/storageAccounts",
-            "name": "[variables('vhdStorageAccountName')]",
-            "apiVersion": "2016-01-01",
-            "location": "[variables('vmlocation')]",
-            "sku": {
-                "name": "Standard_LRS"
-            },
-            "kind": "Storage",
-            "properties": {}
-        },
-        {
-            "apiVersion": "2016-09-01",
-            "type": "Microsoft.Network/publicIPAddresses",
-            "name": "[variables('PIPName')]",
-            "location": "[resourceGroup().location]",
+    "ExistingNetworkResourceGroup": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource Group for the VNET where the VM will be placed"
+      }
+    },
+    "vnetName": {
+      "defaultValue": "vnet",
+      "type": "string",
+      "metadata": {
+        "description": "Virtual network name"
+      }
+    },
+    "subnetName": {
+      "defaultValue": "mgtsubnet",
+      "type": "string",
+      "metadata": {
+        "description": "subnet name"
+      }
+    },
+    "StaticIP": {
+      "defaultValue": "10.0.2.4",
+      "type": "string",
+      "metadata": {
+        "description": "StaticIP"
+      }
+    },
+    "vmPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Password for the Virtual Machine"
+      }
+    },
+    "customUri": {
+      "type": "string",
+      "metadata": {
+        "description": "Uri for SAP Bits"
+      }
+    },
+    "vmLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Location region for the Virtual Machine"
+      },
+      "defaultValue": ""
+    }
+  },
+  "variables": {
+    "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
+    "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
+    "vNicName": "[concat(parameters('vmName'),'nic')]",
+    "PIPName": "[concat(parameters('vmName'),'pip')]",
+    "vhdStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]",
+    "scriptFolder": ".",
+    "scriptFileName": "hanastudio.ps1",
+    "fileuri": "https://raw.githubusercontent.com/bqtrinh/AzQ/masterhanastudio.ps1",
+    "scriptParameters": "[concat(' -BaseURI ', parameters('customUri'))]",
+    "vmlocation": "[if(greater(length(parameters('vmLocation')),0), parameters('vmLocation'),resourceGroup().location)]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[variables('vhdStorageAccountName')]",
+      "apiVersion": "2016-01-01",
+      "location": "[variables('vmlocation')]",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "Storage",
+      "properties": {}
+    },
+    {
+      "apiVersion": "2016-09-01",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('PIPName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic"
+      }
+    },
+    {
+      "apiVersion": "2016-09-01",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[variables('vNicName')]",
+      "location": "[variables('vmlocation')]",
+      "dependsOn": ["[variables('PIPName')]"],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
             "properties": {
-                "publicIPAllocationMethod": "Dynamic"
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "[parameters('StaticIP')]",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('PIPName'))]"
+              },
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              }
             }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2018-10-01",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[parameters('vmName')]",
+      "location": "[variables('vmlocation')]",
+      "dependsOn": [
+        "[variables('vhdStorageAccountName')]",
+        "[variables('vNICName')]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_D1_v2"
         },
-        {
-            "apiVersion": "2016-09-01",
-            "type": "Microsoft.Network/networkInterfaces",
-            "name": "[variables('vNicName')]",
-            "location": "[variables('vmlocation')]",
-            "dependsOn": [
-                "[variables('PIPName')]"
-            ],
-            "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "privateIPAllocationMethod": "Static",
-                            "privateIPAddress": "[parameters('StaticIP')]",
-                            "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('PIPName'))]"
-                            },
-                            "subnet": {
-                                "id": "[variables('subnetRef')]"
-                            }
-                        }
-                    }
-                ]
+        "osProfile": {
+          "computerName": "[parameters('vmName')]",
+          "adminUsername": "[parameters('vmUserName')]",
+          "adminPassword": "[parameters('vmPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2016-Datacenter",
+            "version": "latest"
+          },
+          "osDisk": {
+            "caching": "ReadWrite",
+            "name": "osdisk",
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('vNicName'))]"
             }
-        },
-        {
-            "apiVersion": "2018-10-01",
-            "type": "Microsoft.Compute/virtualMachines",
-            "name": "[parameters('vmName')]",
-            "location": "[variables('vmlocation')]",
-            "dependsOn": [
-                "[variables('vhdStorageAccountName')]",
-                "[variables('vNICName')]"
-            ],
-            "properties": {
-                "hardwareProfile": {
-                    "vmSize": "Standard_D1_v2"
-                },
-                "osProfile": {
-                    "computerName": "[parameters('vmName')]",
-                    "adminUsername": "[parameters('vmUserName')]",
-                    "adminPassword": "[parameters('vmPassword')]"
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "MicrosoftWindowsServer",
-                        "offer": "WindowsServer",
-                        "sku": "2016-Datacenter",
-                        "version": "latest"
-                    },
-                    "osDisk": {
-                        "caching": "ReadWrite",
-                        "name": "osdisk",
-                        "createOption": "FromImage"
-                    }
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('vNicName'))]"
-                        }
-                    ]
-                }
-            },
-            "resources": [
-                {
-                    "type": "extensions",
-                    "name": "CustomScriptExtension",
-                    "apiVersion": "2015-06-15",
-                    "location": "[variables('vmlocation')]",
-                    "dependsOn": [
-                        "[parameters('vmName')]"
-                    ],
-                    "tags": {
-                        "displayName": "hanastudio"
-                    },
-                    "properties": {
-                        "publisher": "Microsoft.Compute",
-                        "type": "CustomScriptExtension",
-                        "typeHandlerVersion": "1.9",
-                        "autoUpgradeMinorVersion": true,
-                        "settings": {
-                            "fileUris": [
-                                "[variables('fileuri')]"
-                            ],
-                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File hanastudio.ps1', variables('scriptParameters'))]"
-                        },
-                        "protectedSettings": {}
-                    }
-                }
-            ]
+          ]
         }
-    ],
-    "outputs": {}
+      },
+      "resources": [
+        {
+          "type": "extensions",
+          "name": "CustomScriptExtension",
+          "apiVersion": "2015-06-15",
+          "location": "[variables('vmlocation')]",
+          "dependsOn": ["[parameters('vmName')]"],
+          "tags": {
+            "displayName": "hanastudio"
+          },
+          "properties": {
+            "publisher": "Microsoft.Compute",
+            "type": "CustomScriptExtension",
+            "typeHandlerVersion": "1.9",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+              "fileUris": ["[variables('fileuri')]"],
+              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File hanastudio.ps1', variables('scriptParameters'))]"
+            },
+            "protectedSettings": {}
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": {}
 }
