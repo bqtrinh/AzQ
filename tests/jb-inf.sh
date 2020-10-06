@@ -11,7 +11,7 @@ echo "creating jumpbox"
 az group deployment create \
 --name JumpboxDeployment \
 --resource-group $rgname \
---template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/masterhanajumpbox/hanajumpbox.json" \
+--template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/master/tests/jb-inf.sh?token=ACARGSWU7ML2UFJNRUVJUFC7PTHIU" \
 --parameters vmName=hanajumpbox \
 vmUserName=$vmusername \
 StaticIP=$JBPIP \
