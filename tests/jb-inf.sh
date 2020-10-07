@@ -7,18 +7,20 @@ else
     source ./azuredeploy.cfg
 fi
 
+
+
 echo "creating jumpbox"
 az group deployment create \
 --name JumpboxDeployment \
 --resource-group $rgname \
---template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/master/tests/jb-inf.sh?token=ACARGSWU7ML2UFJNRUVJUFC7PTHIU" \
+--template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/hanajumpbox/hanajumpbox.json" \
 --parameters vmName=hanajumpbox \
-vmUserName=$vmusername \
-StaticIP=$JBPIP \
-ExistingNetworkResourceGroup=$rgname \
-vnetName=$vnetname \
-subnetName=$mgtsubnetname \
-vmPassword=$vmpassword \
-customUri=$customuri
+   vmUserName=$vmusername \
+   StaticIP=$JBPIP \
+   ExistingNetworkResourceGroup=$rgname \
+   vnetName=$vnetname \
+   subnetName=$mgtsubnetname \
+   vmPassword=$vmpassword \
+   customUri=$customuri
 
 echo "jumpbox created"
