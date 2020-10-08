@@ -18,7 +18,7 @@ echo "creating hana cluster"
 az group deployment create \
 --name HANADeployment \
 --resource-group $rgname \
---template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/mastersap-hana-cluster/azuredeploy-hsr-infra.json" \
+--template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/master/sap-hana-cluster/azuredeploy-hsr-infra.json" \
 --parameters \
 VMName1=$HANAVMNAME1 \
 VMName2=$HANAVMNAME2 \
