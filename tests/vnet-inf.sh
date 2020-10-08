@@ -15,7 +15,7 @@ echo "creating vnet"
 az group deployment create \
 --name vnetDeployment \
 --resource-group $rgname \
---template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/mastervnet.json" \
+--template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/master/vnet.json" \
 --parameters \
 addressPrefix=$vnetaddressPrefix \
 DBSubnetName=$dbsubnetname \
