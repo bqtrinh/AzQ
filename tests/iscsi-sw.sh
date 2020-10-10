@@ -13,7 +13,7 @@ echo "installing iscsi server software"
 az group deployment create \
 --name ISCSIDeployment \
 --resource-group $rgname \
---template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/mastersap-iscsi-server/iscsiserver-sw.json" \
+--template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/master/sap-iscsi-server/iscsiserver-sw.json" \
 --parameters vmName="${ISCSIVMNAME}" \
 customUri=$customuri \
 IQN1="$NFSIQN" \
