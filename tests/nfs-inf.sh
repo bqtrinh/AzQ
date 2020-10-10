@@ -13,7 +13,7 @@ echo "creating nfs cluster"
 az group deployment create \
 --name NFSDeployment \
 --resource-group $rgname \
---template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/mastersap-nfs-service/azuredeploy-nfs-infra.json" \
+--template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/master/sap-nfs-service/azuredeploy-nfs-infra.json" \
 --parameters prefix=nfs \
 VMName1=$NFSVMNAME1 \
 VMName2=$NFSVMNAME2 \
