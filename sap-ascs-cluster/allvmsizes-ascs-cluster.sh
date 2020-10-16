@@ -921,7 +921,7 @@ crm configure primitive rsc_nc_${ASCSSID} anything \
      params binfile="/usr/bin/nc" cmdline_options="-l -k 62000" \
      op monitor timeout=20s interval=10 depth=0
 
-# WARNING: Resources nc_NW1_ASCS,nc_NW1_ERS violate uniqueness for parameter "binfile": "/usr/bin/nc"
+# WARNING: Resources nc_LIN_ASCS,nc_LIN_ERS violate uniqueness for parameter "binfile": "/usr/bin/nc"
 # Do you still want to commit (y/n)? y
 
 sudo crm configure group g-${ASCSSID}_ERS rsc_nc_${ASCSSID} vip_${ASCSSID}
@@ -1002,14 +1002,14 @@ crm configure  op_defaults \$id="op-options"  timeout="600"
  crm configure primitive rsc_sap_${ASCSSID}_ASCS${ASCSINSTANCE} SAPInstance \
  operations \$id=rsc_sap_${ASCSSID}_ASCS${ASCSINSTANCE}-operations \
  op monitor interval=11 timeout=60 on_fail=restart \
- params InstanceName=${ASCSSID}_ASCS${ASCSINSTANCE}_nw1-ascs START_PROFILE="/sapmnt/${ASCSSID}/profile/${ASCSSID}_ASCS00_ascs1" \
+ params InstanceName=${ASCSSID}_ASCS${ASCSINSTANCE}_lin-ascs START_PROFILE="/sapmnt/${ASCSSID}/profile/${ASCSSID}_ASCS00_ascs1" \
  AUTOMATIC_RECOVER=false \
  meta resource-stickiness=5000 failure-timeout=60 migration-threshold=1 priority=10
 
  crm configure primitive rsc_sap_${ASCSSID}_ERS${ERSINSTANCE} SAPInstance \
  operations \$id=rsc_sap_${ASCSSID}_ERS${ERSINSTANCE}-operations \
  op monitor interval=11 timeout=60 on_fail=restart \
- params InstanceName=${ASCSSID}_ERS${ERSINSTANCE}_nw1-aers START_PROFILE="/sapmnt/${ASCSSID}/profile/${ASCSSID}_ERS${ERSINSTANCE}_ascs2" AUTOMATIC_RECOVER=false IS_ERS=true \
+ params InstanceName=${ASCSSID}_ERS${ERSINSTANCE}_lin-aers START_PROFILE="/sapmnt/${ASCSSID}/profile/${ASCSSID}_ERS${ERSINSTANCE}_ascs2" AUTOMATIC_RECOVER=false IS_ERS=true \
  meta priority=1000
 
  crm configure modgroup g-${ASCSSID}_ASCS add rsc_sap_${ASCSSID}_ASCS00
