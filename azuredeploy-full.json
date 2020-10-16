@@ -112,7 +112,7 @@
     },
 
     "HANASID": {
-      "defaultValue": "H10",
+      "defaultValue": "ML4",
       "type": "string"
     },
     "ASCSSID": {
@@ -149,7 +149,7 @@
     "ASCSIQNCLIENT2": "iqn.1991-05.com.microsoft:ascs-target:ascsvm2",
 
     "SAPBITSMOUNT": "[concat(parameters('NFSILBIP'), '/NWS/SapBits')]",
-    "SAPMNTMOUNT": "[concat(parameters('NFSILBIP'), '/NWS/sapmntH10')]",
+    "SAPMNTMOUNT": "[concat(parameters('NFSILBIP'), '/NWS/sapmntML4')]",
     "USRSAPSIDMOUNT": "[concat(parameters('NFSILBIP'), '/NWS/ASCS')]",
     "USRSAPASCSMOUNT": "[concat(parameters('NFSILBIP'), '/NWS/ASCS')]",
     "USRSAPERSMOUNT": "[concat(parameters('NFSILBIP'), '/NWS/ASCSERS')]",
