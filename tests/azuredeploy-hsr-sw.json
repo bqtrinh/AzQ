@@ -38,7 +38,7 @@
       "metadata": {
         "description": "SAP HANA System ID"
       },
-      "defaultValue": "H10"
+      "defaultValue": "ML4"
     },
     "HANANumber": {
       "type": "string",
