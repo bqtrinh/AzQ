@@ -125,7 +125,7 @@
       "metadata": {
         "description": "SID for the HANA database"
       },
-      "defaultValue": "H10"
+      "defaultValue": "ML4"
     },
     "DBINSTANCE": {
       "type": "string",
@@ -139,7 +139,7 @@
       "metadata": {
         "description": "SID for the App Tier"
       },
-      "defaultValue": "S4A"
+      "defaultValue": "LIN"
     },
     "ASCSHOST": {
       "type": "string",
@@ -181,7 +181,7 @@
       "metadata": {
         "description": "mount point for the sapmnt nfs share"
       },
-      "defaultValue": "10.0.1.10:/NWS/sapmntH10"
+      "defaultValue": "10.0.1.10:/NWS/sapmntML4"
     },
     "USRSAPSIDMOUNT": {
       "type": "string",
