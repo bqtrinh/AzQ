@@ -94,7 +94,7 @@
       "metadata": {
         "description": "SAP HANA System ID"
       },
-      "defaultValue": "H10"
+      "defaultValue": "ML4"
     },
     "SubscriptionEmail": {
       "type": "string",
@@ -236,7 +236,7 @@
       "metadata": {
         "description": "NFS mount point for /sapmnt"
       },
-      "defaultValue": "10.0.1.10:/NWS/sapmntH10"
+      "defaultValue": "10.0.1.10:/NWS/sapmntML4"
     },
     "USRSAPSIDMOUNT": {
       "type": "string",
