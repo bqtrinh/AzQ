@@ -48,21 +48,21 @@
       "metadata": {
         "description": "Password for the Virtual Machine"
       },
-      "defaultValue": "Hana07061992!"
+      "defaultValue": "P@ssw0rd123!"
     },
     "hanaSid": {
       "type": "string",
       "metadata": {
         "description": "SAP HANA System ID"
       },
-      "defaultValue": "H10"
+      "defaultValue": "ML4"
     },
     "hanaNumber": {
       "type": "string",
       "metadata": {
         "description": "SAP HANA Instance Number"
       },
-      "defaultValue": "00"
+      "defaultValue": "02"
     },
     "vmSize": {
       "type": "string",
