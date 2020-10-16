@@ -121,11 +121,11 @@
     },
 
     "NWVMNAME1": {
-      "defaultValue": "nw1",
+      "defaultValue": "lin1",
       "type": "string"
     },
     "NWVMNAME2": {
-      "defaultValue": "nw2",
+      "defaultValue": "lin2",
       "type": "string"
     },
     "NWVMIP1": {
