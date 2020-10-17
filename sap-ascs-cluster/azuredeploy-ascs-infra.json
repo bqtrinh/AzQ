@@ -25,8 +25,9 @@
       "metadata": {
         "description": "VM Size"
       },
-      "defaultValue": "Standard_DS3_v2",
+      "defaultValue": "Standard_D2s_v3",
       "allowedValues": [
+        "Standard_D2s_v3",
         "Standard_DS3_v2",
         "Standard_DS12_v2",
         "Standard_DS13-4_v2",
@@ -110,9 +111,10 @@
       "metadata": {
         "description": "Operating system for HANA Machine"
       },
-      "defaultValue": "SLES for SAP 12 SP3",
+      "defaultValue": "SLES for SAP 15 SP1 gen2",
       "allowedValues": [
         "Windows Server 2016 Datacenter",
+        "SLES for SAP 15 SP1 gen2",
         "SLES for SAP 12 SP3",
         "SLES for SAP 12 SP4",
         "SLES for SAP 12 SP2",
