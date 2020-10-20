@@ -74,7 +74,7 @@
       "metadata": {
         "description": "Operating system for nfs Machine"
       },
-      "defaultValue": "SLES for SAP 12 SP3",
+      "defaultValue": "SLES for SAP 15 SP1 gen2",
       "allowedValues": [
         "SLES for SAP 12 SP5",
         "SLES for SAP 15 SP1",
@@ -85,7 +85,8 @@
         "SLES 12 SP5",
         "SLES 15 SP1",
         "SLES 12 SP4",
-        "SLES 12 SP3"
+        "SLES 12 SP3", 
+        "SLES for SAP 15 SP1 gen2"
       ]
     },
     "ExistingNetworkResourceGroup": {
