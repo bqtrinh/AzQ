@@ -101,7 +101,7 @@
   "variables": {
     "vmName1": "[toLower(parameters('vmName1'))]",
     "vmName2": "[toLower(parameters('vmName2'))]",
-    "baseUri": "https://raw.githubusercontent.com/bqtrinh/AzQ/mastersap-nfs-service",
+    "baseUri": "https://raw.githubusercontent.com/bqtrinh/AzQ/master/sap-nfs-service",
     "repoUri": "[variables('baseUri')]"
   },
   "resources": [
@@ -135,7 +135,7 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "https://raw.githubusercontent.com/bqtrinh/AzQ/mastersap-nfs-service/allvmsizes-nfs-cluster.sh"
+            "https://raw.githubusercontent.com/bqtrinh/AzQ/master/sap-nfs-service/allvmsizes-nfs-cluster.sh"
           ],
           "commandToExecute": "[concat('cp allvmsizes-nfs-cluster.sh /root; cp allsetup.sh /root; echo \" ./allvmsizes-nfs-cluster.sh \"', parameters('vmUserName'), '\"  \"', parameters('vmPassword'), '\"  \"', variables('vmName2'), '\"  \"',variables('vmName1'), '\"  \"',parameters('StaticIP2'), '\"  \"',parameters('StaticIP1'), '\" \"no\" \"',variables('repoUri'),'\" \"',parameters('ISCSIIP'),'\" \"',parameters('IQN'),'\" \"',parameters('IQNClient2'),'\" \"',parameters('ILBIP'), '\" \"',parameters('SubscriptionEmail'), '\" \"', parameters('SubscriptionID'),'\" \"', parameters('SMTUri'),'\" \" >/root/doit.sh;chmod u+x /root/doit.sh ')]"
         }
