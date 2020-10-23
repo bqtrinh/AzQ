@@ -14,16 +14,16 @@ echo "creating ascs cluster"
 az group deployment create \
 --name ASCSDeployment \
 --resource-group $rgname \
---template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/mastersap-ascs-cluster/azuredeploy-ascs-infra.json" \
+--template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/master/sap-ascs-cluster/azuredeploy-ascs-infra.json" \
 --parameters prefix=ascs \
 VMName1=$ASCSVMNAME1 \
 VMName2=$ASCSVMNAME2 \
-VMSize="Standard_DS3_v2" \
+VMSize="Standard_D4s_v3" \
 vnetName="$vnetname" \
 SubnetName="$appsubnetname" \
 VMUserName="$vmusername" \
 VMPassword="$vmpassword" \
-OperatingSystem="SLES for SAP 12 SP4" \
+OperatingSystem="SLES for SAP 15 SP1 gen2" \
 ExistingNetworkResourceGroup="$vnetrgname" \
 StaticIP1="$ASCSIP1" \
 StaticIP2="$ASCSIP2" \
