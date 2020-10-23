@@ -111,7 +111,7 @@
     }
   },
   "variables": {
-    "baseUri": "https://raw.githubusercontent.com/bqtrinh/AzQ/mastersap-ascs-cluster",
+    "baseUri": "https://raw.githubusercontent.com/bqtrinh/AzQ/master/sap-ascs-cluster",
     "repoUri": "[variables('baseUri')]",
     "infraUri": "[concat(variables('baseUri'), '/azuredeploy-ascs-infra.json')]",
     "swUri": "[concat(variables('baseUri'), '/azuredeploy-ascs-sw.json')]"
