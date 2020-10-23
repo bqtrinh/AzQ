@@ -151,7 +151,7 @@
       "value": "[concat('https://raw.githubusercontent.com/bqtrinh/AzQ/master', 'sap-iscsi-server/iscsiserver.sh')]"
     },
     "csExtensionScript": {
-      "value": "https://raw.githubusercontent.com/bqtrinh/AzQ/mastersap-iscsi-server/iscsiserver.sh"
+      "value": "https://raw.githubusercontent.com/bqtrinh/AzQ/master/sap-iscsi-server/iscsiserver.sh"
     },
     "csExtensionscriptCall": {
       "value": "sh iscsiserver.sh"
