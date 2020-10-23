@@ -81,7 +81,7 @@
       "metadata": {
         "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
       },
-      "defaultValue": "https://raw.githubusercontent.com/bqtrinh/AzQ/master"
+      "defaultValue": "https://raw.githubusercontent.com/bqtrinh/AzQ/master/"
     },
     "_artifactsLocationSasToken": {
       "type": "securestring",
@@ -171,7 +171,7 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "https://raw.githubusercontent.com/bqtrinh/AzQ/mastersap-iscsi-server/iscsiserver.sh"
+            "https://raw.githubusercontent.com/bqtrinh/AzQ/master/sap-iscsi-server/iscsiserver.sh"
           ],
           "commandToExecute": "[concat('sh iscsiserver.sh',' \"',parameters('IQN1'),'\" \"',parameters('IQN1client1'),'\" \"',parameters('IQN1client2'),'\" \"',parameters('IQN2'),'\" \"',parameters('IQN2client1'),'\" \"',parameters('IQN2client2') ,'\" \"',parameters('IQN3'),'\" \"',parameters('IQN3client1'),'\" \"',parameters('IQN3client2'),'\"')]"
         },
