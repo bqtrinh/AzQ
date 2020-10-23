@@ -25,7 +25,7 @@
       "metadata": {
         "description": "Operating system for HANA Machine"
       },
-      "defaultValue": "SLES for SAP 12 SP3",
+      "defaultValue": "SLES for SAP 15 SP1 gen2",
       "allowedValues": [
         "Windows Server 2016 Datacenter",
         "SLES for SAP 12 SP5",
@@ -33,6 +33,7 @@
         "SLES for SAP 12 SP3",
         "SLES for SAP 12 SP4",
         "SLES for SAP 12 SP2",
+        "SLES for SAP 15 SP1 gen2",
         "RHEL 7.2 for SAP HANA"
       ]
     },
@@ -48,21 +49,21 @@
       "metadata": {
         "description": "Password for the Virtual Machine"
       },
-      "defaultValue": "Hana07061992!"
+      "defaultValue": ""
     },
     "hanaSid": {
       "type": "string",
       "metadata": {
         "description": "SAP HANA System ID"
       },
-      "defaultValue": "H10"
+      "defaultValue": "ML4"
     },
     "hanaNumber": {
       "type": "string",
       "metadata": {
         "description": "SAP HANA Instance Number"
       },
-      "defaultValue": "00"
+      "defaultValue": "02"
     },
     "vmSize": {
       "type": "string",
