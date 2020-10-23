@@ -13,7 +13,7 @@ echo "installing ascs cluster"
 az group deployment create \
 --name ASCSSWDeployment \
 --resource-group $rgname \
---template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/mastersap-ascs-cluster/azuredeploy-ascs-sw.json" \
+--template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/master/sap-ascs-cluster/azuredeploy-ascs-sw.json" \
 --parameters \
 VMName1=$ASCSVMNAME1 \
 VMName2=$ASCSVMNAME2 \
