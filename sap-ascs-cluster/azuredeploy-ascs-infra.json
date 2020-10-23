@@ -203,7 +203,7 @@
     "prefix": "[toLower(parameters('prefix'))]",
     "vmName1": "[toLower(parameters('vmName1'))]",
     "vmName2": "[toLower(parameters('vmName2'))]",
-    "baseUri": "https://raw.githubusercontent.com/bqtrinh/AzQ/mastersap-ascs-cluster",
+    "baseUri": "https://raw.githubusercontent.com/bqtrinh/AzQ/master/sap-ascs-cluster",
     "repoUri": "[variables('baseUri')]",
     "smallUri": "[concat(variables('baseUri'), '/small-ascs.json')]",
     "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
