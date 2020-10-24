@@ -28,7 +28,7 @@ The following table shows a configuration of VM types that customers commonly us
 
 ## Prerequisites
 
-To create an sbd device for the cluster configuration, the Custom Script Extension leverages an existing ISCSI server. The deployment assumes that an ISCSI target is already set up. For more information on setting up the ISCSI server please refer to the [ISCSI documentation](https://raw.githubusercontent.com/bqtrinh/AzQ/mastersap-iscsi-server/README.md).
+To create an sbd device for the cluster configuration, the Custom Script Extension leverages an existing ISCSI server. The deployment assumes that an ISCSI target is already set up. For more information on setting up the ISCSI server please refer to the [ISCSI documentation](https://raw.githubusercontent.com/bqtrinh/AzQ/master/sap-iscsi-server/README.md).
 
 ## Installation Media
 
