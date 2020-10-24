@@ -25,10 +25,11 @@
       "metadata": {
         "description": "Operating system for HANA Machine"
       },
-      "defaultValue": "SLES for SAP 12 SP3",
+      "defaultValue": "SLES for SAP 15 SP1 gen2",
       "allowedValues": [
         "SLES for SAP 12 SP3",
         "SLES for SAP 12 SP2",
+        "SLES for SAP 15 SP1 gen2",
         "RHEL 7.2 for SAP HANA"
       ]
     },
@@ -44,21 +45,21 @@
       "metadata": {
         "description": "Password for the Virtual Machine"
       },
-      "defaultValue": "Hana07061992!"
+      "defaultValue": "P@ssw0rd123!"
     },
     "hanaSid": {
       "type": "string",
       "metadata": {
         "description": "SAP HANA System ID"
       },
-      "defaultValue": "H10"
+      "defaultValue": "ML4"
     },
     "hanaNumber": {
       "type": "string",
       "metadata": {
         "description": "SAP HANA Instance Number"
       },
-      "defaultValue": "00"
+      "defaultValue": "02"
     },
     "vmSize": {
       "type": "string",
@@ -112,15 +113,15 @@
   "variables": {
     "api-version": "2017-06-01",
     "api-version-vm": "2017-12-01",
-    "vmPassword": "HANA07061992!",
+    "vmPassword": "",
     "mode": "Push",
-    "baseUri": "https://raw.githubusercontent.com/bqtrinh/AzQ/master",
+    "baseUri": "https://raw.githubusercontent.com/bqtrinh/AzQ/master/",
     "nicName": "[if(equals(parameters('IPAllocationMethod'),'Static'),concat(parameters('vmName'),'-static'),concat(parameters('vmName'),'-dynamic'))]",
     "subnetRef": "[parameters('HANAsubnetRef')]",
     "OperatingSystemSpec": {
       "imagePublisher": "[if (contains(parameters('OperatingSystem'),'SLES'),'SUSE','RedHat')]",
       "imageOffer": "[if (contains(parameters('OperatingSystem'),'SLES'),if (contains(parameters('SubscriptionEmail'),'@'),'SLES-SAP-BYOS','SLES-SAP'),'RHEL-SAP-HANA')]",
-      "sku": "[if (contains(parameters('OperatingSystem'),'12 SP3'),'12-SP3',if (contains(parameters('OperatingSystem'),'12 SP2'),'12-SP2','7.2'))]"
+      "sku": "[if (contains(parameters('OperatingSystem'),'gen2-15'),(contains(parameters('OperatingSystem'),'12 SP3'),'12-SP3',if (contains(parameters('OperatingSystem'),'12 SP2'),'12-SP2','7.2'))]"
     },
     "diskConfig": "[variables(concat('diskConfig_', parameters('vmSize')))]",
     "diskConfig_Standard_M64ms": {
