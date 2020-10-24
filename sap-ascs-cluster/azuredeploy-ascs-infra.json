@@ -242,7 +242,7 @@
     {
       "type": "Microsoft.Network/loadBalancers",
       "sku": {
-        "name": "Basic",
+        "name": "Standard",
         "tier": "Regional"
       },
       "name": "[variables('loadBalancerName')]",
