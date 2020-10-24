@@ -22,12 +22,12 @@ az group deployment create \
 --parameters \
 VMName1=$HANAVMNAME1 \
 VMName2=$HANAVMNAME2 \
-VMSize="Standard_E16s_v3 (128 GB)" \
+VMSize="Standard_M208ms_v2" \
 NetworkName=$vnetname \
 HANASubnetName=$dbsubnetname \
 VMUserName=$vmusername \
 VMPassword=$vmpassword \
-OperatingSystem="SLES for SAP 12 SP4" \
+OperatingSystem="SLES for SAP 15 SP1 gen2" \
 ExistingNetworkResourceGroup="$vnetrgname" \
 StaticIP1=$HANAIP1 \
 StaticIP2=$HANAIP2 \
