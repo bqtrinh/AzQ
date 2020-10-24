@@ -21,7 +21,7 @@
       "metadata": {
         "description": "VM Size"
       },
-      "defaultValue": "Standard_DS14_v2 (128 GB)",
+      "defaultValue": "Standard_M208ms_v2",
       "allowedValues": [
         "Standard_DS14_v2 (128 GB)",
         "Standard_GS5 (448 GB, Certified)",
@@ -86,7 +86,7 @@
       "metadata": {
         "description": "Operating system for HANA Machine"
       },
-      "defaultValue": "SLES for SAP 15 SP1",
+      "defaultValue": "SLES for SAP 15 SP1 gen2",
       "allowedValues": [
         "SLES for SAP 15 SP1",
         "SLES for SAP 12 SP5",
@@ -94,6 +94,7 @@
         "SLES for SAP 12 SP3",
         "SLES for SAP 12 SP2",
         "SLES for SAP 15 SP1 BYOS",
+        "SLES for SAP 15 SP1 gen2",
         "SLES for SAP 12 SP5 BYOS",
         "SLES for SAP 12 SP4 BYOS",
         "SLES for SAP 12 SP3 BYOS",
