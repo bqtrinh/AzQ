@@ -47,11 +47,11 @@ The Server Java Runtime Environment bits can be downloaded [here](http://www.ora
 
 There should be a folder inside your storage account container called SapBits:
 
-![SapBits Image](https://raw.githubusercontent.com/bqtrinh/AzQ/mastermedia/Structure1.png)
+![SapBits Image](https://raw.githubusercontent.com/bqtrinh/AzQ/master/media/Structure1.png)
 
 The following files should be present inside the SapBits folder:
 
-![HANA Image](https://raw.githubusercontent.com/bqtrinh/AzQ/mastermedia/Structure2.png)
+![HANA Image](https://raw.githubusercontent.com/bqtrinh/AzQ/master/media/Structure2.png)
 
 ## Deploy the Solution
 
@@ -119,18 +119,18 @@ For your deployment to be supported by SAP the Azure Enhanced Monitoring Extensi
 
 ### When clicking on Deploy to Azure you get redirected to an empty directory
 
-![Directories](https://raw.githubusercontent.com/bqtrinh/AzQ/mastermedia/directories.png)
+![Directories](https://raw.githubusercontent.com/bqtrinh/AzQ/master/media/directories.png)
 
 The only way to get around this is to save the template to your own template library. Click on "Create a Resource" and choose "Template Deployment". Click "Create".
 
-![Directories2](https://raw.githubusercontent.com/bqtrinh/AzQ/mastermedia/directories2.png)
+![Directories2](https://raw.githubusercontent.com/bqtrinh/AzQ/master/media/directories2.png)
 
 Select the option of "Build your own template in the editor"
 
-![Directories3](https://raw.githubusercontent.com/bqtrinh/AzQ/mastermedia/directories3.png)
+![Directories3](https://raw.githubusercontent.com/bqtrinh/AzQ/master/media/directories3.png)
 
-Copy the contents from the azuredeploy.json [file](https://raw.githubusercontent.com/bqtrinh/AzQ/masterazuredeploy.json) and paste them into the template editor, click Save.
+Copy the contents from the azuredeploy.json [file](https://raw.githubusercontent.com/bqtrinh/AzQ/master/azuredeploy.json) and paste them into the template editor, click Save.
 
-![Directories4](https://raw.githubusercontent.com/bqtrinh/AzQ/mastermedia/directories4.png)
+![Directories4](https://raw.githubusercontent.com/bqtrinh/AzQ/master/media/directories4.png)
 
 The template is now available in your template library. Changes made to the github repo will not be replicated, make sure to update your template when changes to the azuredeploy.json file are made.
