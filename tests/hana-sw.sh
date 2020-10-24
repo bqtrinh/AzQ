@@ -13,7 +13,7 @@ echo "installing hana software"
 az group deployment create \
 --name HANADeployment \
 --resource-group "$rgname" \
---template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/mastersap-hana-cluster/azuredeploy-hsr-sw.json" \
+--template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/master/sap-hana-cluster/azuredeploy-hsr-sw.json" \
 --parameters \
 HanaVersion="$HANAVERSION" \
 VMName1="$HANAVMNAME1" \
