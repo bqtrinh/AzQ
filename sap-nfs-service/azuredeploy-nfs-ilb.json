@@ -122,7 +122,7 @@
     "vmSizeArray": "[split(parameters('vmSize'),' ')]",
     "vmSize": "[variables('vmSizeArray')[0]]",
     "avSetNameDB": "[concat(variables('prefix'), '-avset-nfs')]",
-    "loadBalancerName": "[concat(variables('prefix'), 'nfslb')]"
+    "loadBalancerName": "[concat(variables('prefix'), 'nfslb2')]"
   },
   "resources": [
     {
