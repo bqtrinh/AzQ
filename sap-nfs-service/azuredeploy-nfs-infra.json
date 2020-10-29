@@ -28,11 +28,12 @@
       "metadata": {
         "description": "VM Size"
       },
-      "defaultValue": "Standard_D4s_v3",
+      "defaultValue": "Standard_D4s_v4",
       "allowedValues": [
         "Standard_D2s_v3",
         "Standard_D4s_v3",
         "Standard_D8s_v3",
+        "Standard_D4s_v4",
         "Standard_M64s (1 TB)",
         "Standard_M64ms (1.7 TB)",
         "Standard_M128s (2 TB)",
