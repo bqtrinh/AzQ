@@ -17,7 +17,7 @@ az group deployment create \
 --parameters prefix=nfs \
 VMName1=$NFSVMNAME1 \
 VMName2=$NFSVMNAME2 \
-VMSize="Standard_E2s_v3" \
+VMSize="Standard_E4s_v3" \
 vnetName=$vnetname \
 SubnetName=$appsubnetname \
 VMUserName=$vmusername \
