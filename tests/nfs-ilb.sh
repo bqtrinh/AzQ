@@ -11,16 +11,16 @@ echo "creating nfs cluster"
 az group deployment create \
 --name NFSDeployment \
 --resource-group $rgname \
---template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/mastersap-nfs-service/azuredeploy-nfs-ilb.json" \
+--template-uri "https://raw.githubusercontent.com/bqtrinh/AzQ/master/sap-nfs-service/azuredeploy-nfs-ilb.json" \
 --parameters prefix=nfs \
 VMName1=$NFSVMNAME1 \
 VMName2=$NFSVMNAME2 \
-VMSize="Standard_D2s_v3" \
+VMSize="Standard_D4s_v4" \
 vnetName=$vnetname \
 SubnetName=$appsubnetname \
 VMUserName=$vmusername \
 VMPassword=$vmpassword \
-OperatingSystem="SLES for SAP 12 SP4" \
+OperatingSystem="SLES for SAP 15 SP1 gen2" \
 ExistingNetworkResourceGroup=$vnetrgname \
 StaticIP1=$NFSIP1 \
 StaticIP2=$NFSIP2 \
