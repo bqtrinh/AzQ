@@ -60,7 +60,8 @@
         "SLES 12 SP4",
         "SLES 12 SP4 BYOS",
         "SLES 12 SP2",
-        "SLES 12 SP2 BYOS"
+        "SLES 12 SP2 BYOS",
+        "SLES for SAP 15 SP1 gen2"
       ],
       "defaultValue": "SLES 12 SP3",
       "metadata": {
