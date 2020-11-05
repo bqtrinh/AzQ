@@ -63,7 +63,7 @@
         "SLES 12 SP2 BYOS",
         "SLES for SAP 15 SP1 gen2"
       ],
-      "defaultValue": "SLES 12 SP3",
+      "defaultValue": "SLES for SAP 15 SP1 gen2",
       "metadata": {
         "description": "The type of the operating system you want to deploy."
       }
